@@ -2,6 +2,8 @@ package spring.springserver.domain.chat.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,6 +91,7 @@ public class ChatServiceImpl implements ChatService {
                                                      Long roomId) {
 
         ChatRoomParticipant participant = getVisibleParticipant(roomId, username);
+
         List<ChatMessageDocument> messages = participant.getDeletedAt() == null
                 ? chatMessageMongoRepository.findAllByRoomIdOrderByCreatedAtAsc(roomId)
                 : chatMessageMongoRepository.findAllByRoomIdAndCreatedAtAfterOrderByCreatedAtAsc(
@@ -107,9 +110,13 @@ public class ChatServiceImpl implements ChatService {
                                            SendChatMessageRequest sendChatMessageRequest) {
 
         ChatRoomParticipant senderParticipant = getVisibleParticipant(sendChatMessageRequest.roomId(), username);
+
         ChatRoom room = senderParticipant.getRoom();
+
         Member sender = senderParticipant.getMember();
+
         String normalizedMessage = normalizeMessage(sendChatMessageRequest.message());
+
         Instant createdAt = Instant.now();
 
         ChatMessageDocument chatMessageDocument = chatMessageMongoRepository.save(
@@ -125,6 +132,7 @@ public class ChatServiceImpl implements ChatService {
 
         room.updateLastMessageMeta(createdAt, LAST_MESSAGE_PLACEHOLDER);
         reactivateParticipantsOnNewMessage(room, sender.getId());
+
         return ChatMessageResponse.from(chatMessageDocument);
     }
 
@@ -136,10 +144,12 @@ public class ChatServiceImpl implements ChatService {
                 .orElse(null);
 
         if (room == null) {
+
             return false;
         }
 
         ensureParticipantRows(room);
+
         return chatRoomParticipantRepository.existsVisibleParticipant(roomId, username);
     }
 
@@ -149,6 +159,7 @@ public class ChatServiceImpl implements ChatService {
                           Long roomId) {
 
         ChatRoomParticipant participant = getVisibleParticipant(roomId, username);
+
         participant.leave(Instant.now());
     }
 
@@ -160,6 +171,7 @@ public class ChatServiceImpl implements ChatService {
                 : new ChatRoom(professional, client);
 
         ChatRoom savedRoom = chatRoomRepository.save(room);
+
         chatRoomParticipantRepository.save(new ChatRoomParticipant(savedRoom, savedRoom.getClient()));
         chatRoomParticipantRepository.save(new ChatRoomParticipant(savedRoom, savedRoom.getProfessional()));
 
@@ -185,6 +197,7 @@ public class ChatServiceImpl implements ChatService {
                 );
 
         if (!participant.isVisible()) {
+
             throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "나간 채팅방입니다.");
         }
 
@@ -193,7 +206,7 @@ public class ChatServiceImpl implements ChatService {
 
     private Member getMemberByUsername(String username) {
 
-        return memberRepository.findByUsername(username)
+        return Optional.ofNullable(memberRepository.findByUsername(username))
                 .orElseThrow(
                         () -> ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "존재하지 않는 사용자입니다: " + username)
                 );
@@ -203,10 +216,12 @@ public class ChatServiceImpl implements ChatService {
                                        String username) {
 
         if (room.getClient().getUsername().equals(username)) {
+
             return room.getProfessional();
         }
 
         if (room.getProfessional().getUsername().equals(username)) {
+
             return room.getClient();
         }
 
@@ -223,6 +238,7 @@ public class ChatServiceImpl implements ChatService {
         String normalizedMessage = message.trim();
 
         if (normalizedMessage.length() > 1000) {
+
             throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT,
                     "메시지는 1000자를 초과할 수 없습니다.");
         }
@@ -240,6 +256,7 @@ public class ChatServiceImpl implements ChatService {
                                       Member member) {
 
         if (chatRoomParticipantRepository.findByRoomIdAndMemberId(room.getId(), member.getId()).isPresent()) {
+
             return;
         }
 
@@ -262,7 +279,9 @@ public class ChatServiceImpl implements ChatService {
         List<ChatRoomParticipant> participants = chatRoomParticipantRepository.findAllByRoomId(room.getId());
 
         for (ChatRoomParticipant participant : participants) {
+
             if (participant.getMember().getId().equals(senderId)) {
+
                 continue;
             }
 

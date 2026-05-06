@@ -7,10 +7,15 @@ import java.time.Instant;
 public record ChatMessageResponse(
 
         String messageId,
+
         Long roomId,
+
         String senderUsername,
+
         String senderName,
+
         String message,
+
         Instant createdAt
 ) {
 

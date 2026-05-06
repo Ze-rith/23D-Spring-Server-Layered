@@ -8,9 +8,13 @@ import java.time.Instant;
 public record ChatRoomResponse(
 
         Long roomId,
+
         String participantUsername,
+
         String participantName,
+
         String lastMessagePreview,
+
         Instant lastMessageAt
 ) {
 
