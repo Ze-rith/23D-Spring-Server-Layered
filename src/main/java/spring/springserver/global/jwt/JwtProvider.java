@@ -100,10 +100,14 @@ public class JwtProvider implements TokenProvider {
 	@Override
 	public String resolveToken(HttpServletRequest request) {
 
-		String token = request.getHeader("Authorization");
-		if (token != null && token.startsWith("Bearer ")) {
+		return resolveToken(request.getHeader("Authorization"));
+	}
 
-			return token.substring(7);
+	public String resolveToken(String authorizationHeader) {
+
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+
+			return authorizationHeader.substring(7);
 		}
 
 		return null;

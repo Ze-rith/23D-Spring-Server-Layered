@@ -52,15 +52,12 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
                 .getQueryParams();
 
         String token = queryParams.getFirst("token");
+
         if (token != null && !token.isBlank()) {
+
             return token;
         }
 
-        String authorization = serverHttpRequest.getHeaders().getFirst("Authorization");
-        if (authorization != null && authorization.startsWith("Bearer ")) {
-            return authorization.substring(7);
-        }
-
-        return null;
+        return jwtProvider.resolveToken(serverHttpRequest.getHeaders().getFirst("Authorization"));
     }
 }

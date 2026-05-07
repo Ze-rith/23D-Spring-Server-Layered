@@ -2,6 +2,7 @@ package spring.springserver.domain.chat.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -24,16 +25,16 @@ import spring.springserver.global.exception.exception.ApplicationException;
 import spring.springserver.global.exception.status_code.CommonStatusCode;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
-
-    private static final String LAST_MESSAGE_PLACEHOLDER = "새 메시지";
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomParticipantRepository chatRoomParticipantRepository;
     private final ChatMessageMongoRepository chatMessageMongoRepository;
     private final MemberRepository memberRepository;
+
+    private static final String LAST_MESSAGE_PLACEHOLDER = "새 메시지";
 
     @Override
     @Transactional
@@ -42,8 +43,10 @@ public class ChatServiceImpl implements ChatService {
 
         if (username.equals(createChatRoomRequest.username())) {
             
-            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT,
-                    "자기 자신과는 채팅방을 만들 수 없습니다.");
+            throw ApplicationException.of(
+                    CommonStatusCode.INVALID_ARGUMENT,
+                    "자기 자신과는 채팅방을 만들 수 없습니다."
+            );
         }
 
         Member requester = getMemberByUsername(username);
@@ -60,8 +63,12 @@ public class ChatServiceImpl implements ChatService {
                             getOtherParticipant(room, username).getUsername(),
                             true
                     );
-                })
-                .orElseGet(() -> createRoom(requester, target));
+                }).orElseGet(
+                        () -> createRoom(
+                                requester,
+                                target
+                        )
+                );
     }
 
     @Override
@@ -83,15 +90,17 @@ public class ChatServiceImpl implements ChatService {
                             room.getLastMessagePreview(),
                             room.getLastMessageAt()
                     );
-                })
-                .toList();
+                }).toList();
     }
 
     @Override
     public List<ChatMessageResponse> getRoomMessages(String username,
                                                      Long roomId) {
 
-        ChatRoomParticipant participant = getVisibleParticipant(roomId, username);
+        ChatRoomParticipant participant = getVisibleParticipant(
+                roomId,
+                username
+        );
 
         List<ChatMessageDocument> messages = participant.getDeletedAt() == null
                 ? chatMessageMongoRepository.findAllByRoomIdOrderByCreatedAtAsc(roomId)
@@ -110,7 +119,10 @@ public class ChatServiceImpl implements ChatService {
     public ChatMessageResponse sendMessage(String username,
                                            SendChatMessageRequest sendChatMessageRequest) {
 
-        ChatRoomParticipant senderParticipant = getVisibleParticipant(sendChatMessageRequest.roomId(), username);
+        ChatRoomParticipant senderParticipant = getVisibleParticipant(
+                sendChatMessageRequest.roomId(),
+                username
+        );
 
         ChatRoom room = senderParticipant.getRoom();
 
@@ -131,8 +143,15 @@ public class ChatServiceImpl implements ChatService {
                 )
         );
 
-        room.updateLastMessageMeta(createdAt, LAST_MESSAGE_PLACEHOLDER);
-        reactivateParticipantsOnNewMessage(room, sender.getId());
+        room.updateLastMessageMeta(
+                createdAt,
+                LAST_MESSAGE_PLACEHOLDER
+        );
+
+        reactivateParticipantsOnNewMessage(
+                room,
+                sender.getId()
+        );
 
         return ChatMessageResponse.from(chatMessageDocument);
     }
@@ -151,7 +170,10 @@ public class ChatServiceImpl implements ChatService {
 
         ensureParticipantRows(room);
 
-        return chatRoomParticipantRepository.existsVisibleParticipant(roomId, username);
+        return chatRoomParticipantRepository.existsVisibleParticipant(
+                roomId,
+                username
+        );
     }
 
     @Override
@@ -188,18 +210,27 @@ public class ChatServiceImpl implements ChatService {
 
         ChatRoom room = chatRoomRepository.findByIdWithParticipants(roomId)
                 .orElseThrow(
-                        () -> ApplicationException.of(CommonStatusCode.ENDPOINT_NOT_FOUND, "존재하지 않는 채팅방입니다.")
+                        () -> ApplicationException.of(
+                                CommonStatusCode.ENDPOINT_NOT_FOUND,
+                                "존재하지 않는 채팅방입니다."
+                        )
                 );
         ensureParticipantRows(room);
 
         ChatRoomParticipant participant = chatRoomParticipantRepository.findByRoomIdAndMemberUsername(roomId, username)
                 .orElseThrow(
-                        () -> ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "해당 채팅방에 접근할 수 없습니다.")
+                        () -> ApplicationException.of(
+                                CommonStatusCode.INVALID_ARGUMENT,
+                                "해당 채팅방에 접근할 수 없습니다."
+                        )
                 );
 
         if (!participant.isVisible()) {
 
-            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "나간 채팅방입니다.");
+            throw ApplicationException.of(
+                    CommonStatusCode.INVALID_ARGUMENT,
+                    "나간 채팅방입니다."
+            );
         }
 
         return participant;
@@ -209,7 +240,10 @@ public class ChatServiceImpl implements ChatService {
 
         return Optional.ofNullable(memberRepository.findByUsername(username))
                 .orElseThrow(
-                        () -> ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "존재하지 않는 사용자입니다: " + username)
+                        () -> ApplicationException.of(
+                                CommonStatusCode.INVALID_ARGUMENT,
+                                "존재하지 않는 사용자입니다: " + username
+                        )
                 );
     }
 
@@ -226,12 +260,15 @@ public class ChatServiceImpl implements ChatService {
             return room.getClient();
         }
 
-        throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT, "채팅방 참여자가 아닙니다.");
+        throw ApplicationException.of(
+                CommonStatusCode.INVALID_ARGUMENT,
+                "채팅방 참여자가 아닙니다."
+        );
     }
 
     private boolean isProfessional(Member member) {
 
-        return member.getRole() != null && member.getRole().name().equals("PROFESSIONAL");
+        return member.getRole().name().equals("PROFESSIONAL");
     }
 
     private String normalizeMessage(String message) {
@@ -240,8 +277,10 @@ public class ChatServiceImpl implements ChatService {
 
         if (normalizedMessage.length() > 1000) {
 
-            throw ApplicationException.of(CommonStatusCode.INVALID_ARGUMENT,
-                    "메시지는 1000자를 초과할 수 없습니다.");
+            throw ApplicationException.of(
+                    CommonStatusCode.INVALID_ARGUMENT,
+                    "메시지는 1000자를 초과할 수 없습니다."
+            );
         }
 
         return normalizedMessage;
@@ -261,15 +300,25 @@ public class ChatServiceImpl implements ChatService {
             return;
         }
 
-        chatRoomParticipantRepository.save(new ChatRoomParticipant(room, member));
+        chatRoomParticipantRepository.save(new ChatRoomParticipant(
+                room,
+                member
+        ));
     }
 
     private void reactivateParticipant(ChatRoom room,
                                        Member member) {
 
-        ChatRoomParticipant participant = chatRoomParticipantRepository.findByRoomIdAndMemberId(room.getId(), member.getId())
+        ChatRoomParticipant participant = chatRoomParticipantRepository.findByRoomIdAndMemberId(
+                room.getId(),
+                member.getId()
+                )
+
                 .orElseThrow(
-                        () -> ApplicationException.of(CommonStatusCode.ENDPOINT_NOT_FOUND, "채팅방 참여자 정보가 없습니다.")
+                        () -> ApplicationException.of(
+                                CommonStatusCode.ENDPOINT_NOT_FOUND,
+                                "채팅방 참여자 정보가 없습니다."
+                        )
                 );
         participant.reactivate();
     }
@@ -281,7 +330,7 @@ public class ChatServiceImpl implements ChatService {
 
         for (ChatRoomParticipant participant : participants) {
 
-            if (participant.getMember().getId().equals(senderId)) {
+            if (Objects.requireNonNull(participant.getMember().getId()).equals(senderId)) {
 
                 continue;
             }

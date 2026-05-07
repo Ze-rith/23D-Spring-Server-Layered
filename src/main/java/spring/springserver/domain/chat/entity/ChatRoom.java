@@ -40,8 +40,8 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Member client;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

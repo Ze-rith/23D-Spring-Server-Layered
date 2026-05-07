@@ -19,10 +19,17 @@ public class ChatMessageController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/chat.send")
-    public void sendMessage(@Valid SendChatMessageRequest sendChatMessageRequest,
+    public void sendMessage(@Valid final SendChatMessageRequest sendChatMessageRequest,
                             Principal principal) {
 
-        ChatMessageResponse response = chatService.sendMessage(principal.getName(), sendChatMessageRequest);
-        messagingTemplate.convertAndSend("/topic/chat/rooms/" + response.roomId(), response);
+        ChatMessageResponse response = chatService.sendMessage(
+                principal.getName(),
+                sendChatMessageRequest
+        );
+
+        messagingTemplate.convertAndSend(
+                "/topic/chat/rooms/" + response.roomId(),
+                response
+        );
     }
 }

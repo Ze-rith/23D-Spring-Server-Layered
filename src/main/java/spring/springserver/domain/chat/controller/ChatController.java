@@ -30,27 +30,43 @@ public class ChatController {
     public BaseResponse<CreateChatRoomResponse> createRoom(@RequestBody @Valid CreateChatRoomRequest createChatRoomRequest,
                                                            Principal principal) {
 
-        return BaseResponse.ok(chatService.createOrGetDirectRoom(principal.getName(), createChatRoomRequest));
+        return BaseResponse.ok(chatService.createOrGetDirectRoom(
+                        principal.getName(),
+                        createChatRoomRequest
+                )
+        );
     }
 
     @GetMapping("/rooms")
     public BaseResponse<List<ChatRoomResponse>> getRooms(Principal principal) {
 
-        return BaseResponse.ok(chatService.getMyChatRooms(principal.getName()));
+        return BaseResponse.ok(
+                chatService.getMyChatRooms(
+                        principal.getName()
+                )
+        );
     }
 
     @GetMapping("/rooms/{roomId}/messages")
     public BaseResponse<List<ChatMessageResponse>> getMessages(@PathVariable Long roomId,
                                                                Principal principal) {
 
-        return BaseResponse.ok(chatService.getRoomMessages(principal.getName(), roomId));
+        return BaseResponse.ok(
+                chatService.getRoomMessages(
+                        principal.getName(),
+                        roomId)
+        );
     }
 
     @DeleteMapping("/rooms/{roomId}")
     public BaseResponse<Void> leaveRoom(@PathVariable Long roomId,
                                         Principal principal) {
 
-        chatService.leaveRoom(principal.getName(), roomId);
+        chatService.leaveRoom(
+                principal.getName(),
+                roomId
+        );
+
         return BaseResponse.ok(null);
     }
 }

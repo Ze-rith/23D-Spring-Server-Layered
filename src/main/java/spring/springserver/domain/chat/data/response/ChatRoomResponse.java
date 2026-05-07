@@ -17,16 +17,4 @@ public record ChatRoomResponse(
 
         Instant lastMessageAt
 ) {
-
-    public static ChatRoomResponse from(ChatRoom room, Member member) {
-
-        return new ChatRoomResponse(
-                room.getId(),
-                member.getUsername(),
-                member.getName(),
-                room.getLastMessagePreview(),
-                room.getLastMessageAt()
-        );
-
-    }
 }

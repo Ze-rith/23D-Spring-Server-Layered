@@ -25,13 +25,15 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
 
         if (StompCommand.CONNECT.equals(accessor.getCommand()) && accessor.getUser() == null) {
 
-            String token = accessor.getFirstNativeHeader("Authorization");
+            String token = jwtProvider.resolveToken(accessor.getFirstNativeHeader("Authorization"));
 
             if (token != null && token.startsWith("Bearer ")) {
+
                 token = token.substring(7);
             }
 
             if (token == null || jwtProvider.isValidToken(token)) {
+
                 throw new IllegalArgumentException("유효하지 않은 토큰");
             }
 
@@ -39,10 +41,14 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
             var parsedRole = jwtProvider.getRole(token);
             String role = parsedRole != null ? parsedRole.toString() : null;
 
-            accessor.setUser(new StompPrincipal(username, role));
+            accessor.setUser(new StompPrincipal(
+                    username,
+                    role
+            ));
         }
 
         if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+
             validateRoomSubscription(accessor);
         }
 
@@ -52,18 +58,21 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
     private void validateRoomSubscription(StompHeaderAccessor accessor) {
 
         if (accessor.getUser() == null) {
+
             throw new AccessDeniedException("인증되지 않은 사용자입니다.");
         }
 
         String destination = accessor.getDestination();
 
         if (destination == null || !destination.startsWith("/topic/chat/rooms/")) {
+
             return;
         }
 
         Long roomId = extractRoomId(destination);
 
         if (!chatService.canAccessRoom(accessor.getUser().getName(), roomId)) {
+
             throw new AccessDeniedException("해당 채팅방을 구독할 수 없습니다.");
         }
     }
@@ -73,8 +82,10 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
         String roomIdText = destination.substring("/topic/chat/rooms/".length());
 
         try {
+
             return Long.parseLong(roomIdText);
         } catch (NumberFormatException e) {
+
             throw new IllegalArgumentException("유효하지 않은 채팅방 구독 경로입니다.");
         }
     }

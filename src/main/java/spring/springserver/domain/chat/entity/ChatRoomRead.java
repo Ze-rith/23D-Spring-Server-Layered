@@ -50,8 +50,8 @@ public class ChatRoomRead {
     private ChatRoom chatRoom;
 
     // 누가 읽었는지
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Member member;
 
     /**
