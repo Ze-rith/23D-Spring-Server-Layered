@@ -55,14 +55,14 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
         return message;
     }
 
-    private void validateRoomSubscription(StompHeaderAccessor accessor) {
+    private void validateRoomSubscription(StompHeaderAccessor stompHeaderAccessor) {
 
-        if (accessor.getUser() == null) {
+        if (stompHeaderAccessor.getUser() == null) {
 
             throw new AccessDeniedException("인증되지 않은 사용자입니다.");
         }
 
-        String destination = accessor.getDestination();
+        String destination = stompHeaderAccessor.getDestination();
 
         if (destination == null || !destination.startsWith("/topic/chat/rooms/")) {
 
@@ -71,7 +71,7 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
 
         Long roomId = extractRoomId(destination);
 
-        if (!chatService.canAccessRoom(accessor.getUser().getName(), roomId)) {
+        if (!chatService.canAccessRoom(stompHeaderAccessor.getUser().getName(), roomId)) {
 
             throw new AccessDeniedException("해당 채팅방을 구독할 수 없습니다.");
         }

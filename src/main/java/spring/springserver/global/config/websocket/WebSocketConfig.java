@@ -18,28 +18,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final CustomHandshakeHandler customHandshakeHandler;
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
+    public void configureMessageBroker(MessageBrokerRegistry messageBrokerRegistry) {
 
-        config.enableSimpleBroker(
+        messageBrokerRegistry.enableSimpleBroker(
                 "/topic",
                 "/queue"
         );
-        config.setApplicationDestinationPrefixes("/app");
-        config.setUserDestinationPrefix("/user");
+        messageBrokerRegistry.setApplicationDestinationPrefixes("/app");
+        messageBrokerRegistry.setUserDestinationPrefix("/user");
     }
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
+    public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
 
-        registry.addEndpoint("/ws-stomp")
+        stompEndpointRegistry.addEndpoint("/ws-stomp")
                 .setAllowedOriginPatterns("*")
                 .setHandshakeHandler(customHandshakeHandler)
                 .withSockJS();
     }
 
     @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
+    public void configureClientInboundChannel(ChannelRegistration channelRegistration) {
         
-        registration.interceptors(webSocketChannelInterceptor);
+        channelRegistration.interceptors(webSocketChannelInterceptor);
     }
 }
