@@ -61,12 +61,12 @@ public class SecurityConfig {
 						).hasRole("USER")
 
 						.requestMatchers(
-								"/ws-stomp",
 								"/ws-stomp/**"
 						).permitAll()
+                               
 						.requestMatchers(
-								HttpMethod.GET,
-								"/chat-test"
+								HttpMethod.POST,
+								"/api/files/upload"
 						).permitAll()
 
 						.requestMatchers(
@@ -75,8 +75,13 @@ public class SecurityConfig {
 								"/v3/api-docs/**"
 						).permitAll()
 
+            .requestMatchers(
+                HttpMethod.GET,
+                "/files/*"
+            ).permitAll()
+
 						.anyRequest()
-						.authenticated()
+            .authenticated()
 				)
 
 				.addFilterBefore(
