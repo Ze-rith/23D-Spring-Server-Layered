@@ -32,7 +32,7 @@ class Post (
     var created_at: LocalDateTime? = null,
 
     var updated_at: LocalDateTime? = null
-){
+) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
