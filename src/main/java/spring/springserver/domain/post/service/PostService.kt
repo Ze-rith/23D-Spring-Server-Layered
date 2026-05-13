@@ -33,7 +33,9 @@ class PostService (
     fun findPostById(id: Long): PostResponse {
 
         val post = postRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Postid not found") }
+            .orElseThrow {
+                IllegalArgumentException("Postid not found")
+            }
         post.view_count += 1
 
         return PostResponse.of(post)
@@ -43,7 +45,9 @@ class PostService (
     fun updatePost(id: Long, updateRequest: UpdatePostRequest): PostResponse {
 
         val post = postRepository.findById(id)
-        .orElseThrow { IllegalArgumentException("Postid not found") }
+        .orElseThrow {
+            IllegalArgumentException("Postid not found")
+        }
 
         post.title = updateRequest.title
         post.content = updateRequest.content
@@ -59,7 +63,9 @@ class PostService (
     fun deletePost(id: Long) {
 
         val post = postRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Postid not found") }
+            .orElseThrow {
+                IllegalArgumentException("Postid not found")
+            }
 
         postRepository.delete(post)
     }
