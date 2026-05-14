@@ -33,21 +33,31 @@ class CustomOAuthUserService(private val memberRepository: MemberRepository): De
         val nameAttributeKey: String
 
         when (provider) {
+
             Provider.KAKAO -> {
+
                 val kakaoAccount = attributes["kakao_account"] as? Map<*, *>
                     ?: throw ApplicationException(AuthStatusCode.UNKNOWN_REGISTRATION_ID)
+
                 email = kakaoAccount["email"].toString()
 
                 val profile = kakaoAccount["profile"] as? Map<*, *>
                     ?: throw ApplicationException(AuthStatusCode.UNKNOWN_REGISTRATION_ID)
+
                 name = profile["nickname"].toString()
+
                 nameAttributeKey = "id"
             }
+
             Provider.GOOGLE -> {
+
                 email = attributes["email"].toString()
+
                 name = attributes["name"].toString()
+
                 nameAttributeKey = "email"
             }
+
             else -> throw ApplicationException(AuthStatusCode.UNKNOWN_REGISTRATION_ID)
         }
 
