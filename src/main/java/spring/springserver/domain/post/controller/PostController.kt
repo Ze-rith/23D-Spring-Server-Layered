@@ -36,7 +36,7 @@ class PostController(private val postService: PostService) {
     fun updatePost(@Valid @RequestBody id: Long,
                    @Valid @RequestBody updatePostRequest: UpdatePostRequest): BaseResponse<PostResponse> {
 
-            return BaseResponse.ok(postService.updatePost(
+        return BaseResponse.ok(postService.updatePost(
                 id,
                 updatePostRequest
             )
