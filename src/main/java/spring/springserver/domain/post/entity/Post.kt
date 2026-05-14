@@ -40,7 +40,6 @@ class Post (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-
     @PrePersist
     fun prePersist() {
 

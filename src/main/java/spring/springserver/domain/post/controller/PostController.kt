@@ -33,8 +33,7 @@ class PostController(private val postService: PostService) {
     }
 
     @PatchMapping("/update")
-    fun updatePost(
-        @Valid @PathVariable id: Long,
+    fun updatePost(@Valid @PathVariable id: Long,
         @Valid @RequestBody updatePostRequest: UpdatePostRequest): PostResponse {
 
         return postService.updatePost(id, updatePostRequest)
