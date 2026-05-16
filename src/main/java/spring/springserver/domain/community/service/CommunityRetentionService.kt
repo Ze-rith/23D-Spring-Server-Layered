@@ -18,7 +18,7 @@ class CommunityRetentionService(
 
     companion object {
 
-        private const val RETENTION_DAYS = 7L
+        private const val RETENTION_DAYS = 30L
     }
 
     @Scheduled(cron = "0 0 4 * * *")
@@ -47,7 +47,7 @@ class CommunityRetentionService(
                 communityCommentLikeRepository.deleteAllByCommunityCommentIn(commentsOfPosts)
                 communityCommentRepository.deleteAll(commentsOfPosts)
             }
-            
+
             communityPostRepository.deleteAll(expiredPosts)
         }
     }
