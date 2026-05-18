@@ -72,17 +72,10 @@
         }
 
         .code-digit {
-            width: 52px;
-            height: 52px;
-            border: 1px solid #5a5a5a;
-            border-radius: 10px;
-            background: #2f2f2f;
             color: #ffffff;
-            font-size: 28px;
-            font-weight: 600;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 2px;
         }
 
         .expire-text {
@@ -130,7 +123,7 @@
 
     <p class="description">
         안녕하세요.
-        <span th:text="${serviceName}">MyService</span>
+        <span th:text="${userEmail}">example@email.com</span>
         회원가입을 위해 이메일 인증이 필요합니다.<br>
         아래의 6자리 인증 코드를 인증 화면에 입력해주세요.
     </p>
@@ -143,26 +136,9 @@
             <div class="code-digit"
                  th:each="digit : ${digits}"
                  th:text="${digit}">
-                1
             </div>
-        </div>
-
-        <div class="expire-text">
-            이 코드는
-            <span th:text="${expireMinutes}">3</span>
-            분 후 만료됩니다.
-        </div>
-
-    </div>
-
-    <div class="warning-box">
-        <div>!</div>
-        <div>
-            이 이메일을 요청하지 않으셨다면 이 메일을 무시하셔도 됩니다.
-            인증 코드를 타인과 공유하지 마세요.
         </div>
     </div>
 </div>
-
 </body>
 </html>

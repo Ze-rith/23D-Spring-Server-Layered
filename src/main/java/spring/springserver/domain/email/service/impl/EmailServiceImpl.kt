@@ -23,7 +23,10 @@ class EmailServiceImpl(private val javaMailSender: JavaMailSender,
     private lateinit var serviceName: String
 
     fun makeRandomCode(): String {
-        return SecureRandom().nextInt(1000000).toString().padStart(6, '0')
+
+        val chars = "ABCDEFGHJKLMNPQRSTUVWXYZ1234567890"
+
+        return (1..8).map { chars[SecureRandom().nextInt(chars.length)] }.joinToString("")
     }
 
     override fun sendEmailCode(email: String): SendEmailCodeResponse {
@@ -31,7 +34,9 @@ class EmailServiceImpl(private val javaMailSender: JavaMailSender,
         val verifyCode = makeRandomCode()
 
         val context = Context().apply {
+
             setVariable("serviceName", serviceName)
+            setVariable("userEmail", email)
             setVariable("digits", verifyCode.map { it.toString() })
             setVariable("expireMinutes", 3)
         }
@@ -40,6 +45,7 @@ class EmailServiceImpl(private val javaMailSender: JavaMailSender,
         val sendMessage = javaMailSender.createMimeMessage()
 
         try {
+
             val mimeMessageHelper = MimeMessageHelper(sendMessage, true, "utf-8")
             mimeMessageHelper.setFrom(serviceName, "잇다")
             mimeMessageHelper.setTo(email)
@@ -47,8 +53,10 @@ class EmailServiceImpl(private val javaMailSender: JavaMailSender,
             mimeMessageHelper.setText(content, true)
             javaMailSender.send(sendMessage)
         } catch (e: MessagingException) {
+
             throw ApplicationException(EmailException.EMAIL_CANNOT_SEND)
         } catch (e: UnsupportedEncodingException) {
+
             throw ApplicationException(EmailException.EMAIL_CANNOT_SEND)
         }
 
