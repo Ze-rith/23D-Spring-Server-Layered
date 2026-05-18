@@ -73,6 +73,11 @@ public class SecurityConfig {
 						).permitAll()
 
 						.requestMatchers(
+								HttpMethod.POST,
+								"/api/email/code/send"
+						).permitAll()
+
+						.requestMatchers(
 								HttpMethod.GET,
 								"/files/*",
 								"/images/*",
