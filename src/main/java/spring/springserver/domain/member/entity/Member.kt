@@ -46,11 +46,7 @@ class Member (
         createdAt = LocalDateTime.now()
     }
 
-    fun update(name: String) {
-
-        this.name = name
-    }
-
    fun getId(): Long? = id
+
     fun update(name: String) = also { this.name = name }
 }

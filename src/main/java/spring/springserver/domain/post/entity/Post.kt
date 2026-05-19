@@ -32,7 +32,7 @@ class Post (
     var isDeleted: Boolean = false,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "client_member_id", nullable = false)
     var member: Member?
 ) {
 
