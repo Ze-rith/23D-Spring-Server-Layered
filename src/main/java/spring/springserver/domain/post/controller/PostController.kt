@@ -29,7 +29,7 @@ class PostController(private val postService: PostService) {
     }
 
     @GetMapping("/find")
-    fun findPost(@RequestBody @RequestParam id: Long): BaseResponse<PostResponse> {
+    fun findPost(@RequestParam id: Long): BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.findPost(id))
     }
@@ -46,7 +46,7 @@ class PostController(private val postService: PostService) {
     }
 
     @DeleteMapping("/delete")
-    fun deletePost(@RequestBody @RequestParam id: Long): BaseResponse<PostResponse> {
+    fun deletePost(@RequestParam id: Long): BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.deletePost(id))
     }
