@@ -1,6 +1,7 @@
 package spring.springserver.domain.post.controller
 
 import jakarta.validation.Valid
+import org.hibernate.annotations.Parameter
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,7 +28,7 @@ class PostController(private val postService: PostService) {
     }
 
     @GetMapping("/find")
-    fun findPost(@RequestBody id: Long): BaseResponse<PostResponse> {
+    fun findPost(@RequestBody @io.swagger.v3.oas.annotations.Parameter id: Long): BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.findPost(id))
     }
@@ -44,7 +45,7 @@ class PostController(private val postService: PostService) {
     }
 
     @DeleteMapping("/delete")
-    fun deletePost(@RequestBody id: Long): BaseResponse<PostResponse> {
+    fun deletePost(@RequestBody @io.swagger.v3.oas.annotations.Parameter id: Long): BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.deletePost(id))
     }
