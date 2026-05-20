@@ -3,9 +3,9 @@ package spring.springserver.domain.post.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import spring.springserver.domain.auth.exception.AuthStatusCode
-import spring.springserver.domain.post.dto.request.CreatePostRequest
-import spring.springserver.domain.post.dto.request.UpdatePostRequest
-import spring.springserver.domain.post.dto.response.PostResponse
+import spring.springserver.domain.post.data.request.CreatePostRequest
+import spring.springserver.domain.post.data.request.UpdatePostRequest
+import spring.springserver.domain.post.data.response.PostResponse
 import spring.springserver.domain.post.entity.Post
 import spring.springserver.domain.post.repository.PostRepository
 import spring.springserver.global.exception.exception.ApplicationException

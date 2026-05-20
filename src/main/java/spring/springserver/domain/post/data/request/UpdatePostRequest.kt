@@ -1,4 +1,4 @@
-package spring.springserver.domain.post.dto.request
+package spring.springserver.domain.post.data.request
 
 import jakarta.validation.constraints.Size
 

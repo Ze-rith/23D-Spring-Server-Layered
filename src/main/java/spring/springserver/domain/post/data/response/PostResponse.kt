@@ -1,8 +1,7 @@
-package spring.springserver.domain.post.dto.response
+package spring.springserver.domain.post.data.response
 
 import spring.springserver.domain.post.entity.Post
 import java.time.LocalDateTime
-import java.util.Optional
 
 data class PostResponse(
 
