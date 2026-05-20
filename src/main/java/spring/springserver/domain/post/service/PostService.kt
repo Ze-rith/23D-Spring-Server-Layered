@@ -45,13 +45,13 @@ class PostService (private val postRepository: PostRepository) {
 
     fun updatePost(
         id: Long,
-        updateRequest: UpdatePostRequest): PostResponse {
+        updatePostRequest: UpdatePostRequest): PostResponse {
 
         val post = postRepository.findPostById(id)
             ?: throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS)
 
-        post.title = updateRequest.title
-        post.content = updateRequest.content
+        post.title = updatePostRequest.title
+        post.content = updatePostRequest.content
 
         post.preUpdate()
 
