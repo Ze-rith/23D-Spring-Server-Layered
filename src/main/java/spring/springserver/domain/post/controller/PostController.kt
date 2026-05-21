@@ -40,7 +40,7 @@ class PostController(private val postService: PostService) {
     }
 
     @DeleteMapping("/delete/{postId}")
-    fun deletePost(@PathVariable postId: Long): BaseResponse<DeletedPostResponse?>? {
+    fun deletePost(@PathVariable postId: Long): BaseResponse<DeletedPostResponse> {
 
         return BaseResponse.ok(postService.deletePost(postId))
     }

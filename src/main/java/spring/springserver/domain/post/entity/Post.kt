@@ -8,8 +8,6 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.PrePersist
-import jakarta.persistence.PreUpdate
 import spring.springserver.domain.member.entity.Member
 import java.time.LocalDateTime
 
@@ -39,4 +37,5 @@ class Post (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
+    fun getId() = id
 }
