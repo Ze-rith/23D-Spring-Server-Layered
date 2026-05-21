@@ -13,8 +13,6 @@ import spring.springserver.domain.community.comment.data.request.CreateCommentRe
 import spring.springserver.domain.community.comment.data.request.UpdateCommentRequest
 import spring.springserver.domain.community.comment.data.response.CommunityCommentResponse
 import spring.springserver.domain.community.comment.service.CommunityCommentService
-import spring.springserver.domain.community.like.data.request.CommunityCommentLikeRequest
-import spring.springserver.domain.community.like.data.response.CommunityLikeResponse
 import spring.springserver.global.data.BaseResponse
 
 @RestController
@@ -43,17 +41,5 @@ class CommunityCommentController(private val communityCommentService: CommunityC
     fun deleteComment(@RequestParam commentId: Long): BaseResponse<String> {
 
         return BaseResponse.ok(communityCommentService.deleteComment(commentId))
-    }
-
-    @PostMapping("/like")
-    fun likeComment(@RequestBody @Valid communityCommentLikeRequest: CommunityCommentLikeRequest): BaseResponse<CommunityLikeResponse> {
-
-        return BaseResponse.ok(communityCommentService.likeComment(communityCommentLikeRequest))
-    }
-
-    @DeleteMapping("/like")
-    fun unlikeComment(@RequestParam commentId: Long): BaseResponse<CommunityLikeResponse> {
-
-        return BaseResponse.ok(communityCommentService.unlikeComment(commentId))
     }
 }

@@ -12,7 +12,7 @@ interface CommunityPostService {
 
     fun updatePost(updatePostRequest: UpdatePostRequest): UpdatePostResponse
 
-    fun deletePost(postId: Long)
+    fun deletePost(postId: Long): String
 
     fun getPost(postId: Long): CommunityPostResponse
 

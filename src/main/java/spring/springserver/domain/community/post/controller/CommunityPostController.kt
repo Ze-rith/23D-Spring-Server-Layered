@@ -35,8 +35,7 @@ class CommunityPostController(private val communityPostService: CommunityPostSer
     }
 
     @DeleteMapping
-    fun deletePost(@RequestParam postId: Long): BaseResponse<Unit?>? {
-
+    fun deletePost(@RequestParam postId: Long): BaseResponse<String> {
 
         return BaseResponse.ok(communityPostService.deletePost(postId))
     }

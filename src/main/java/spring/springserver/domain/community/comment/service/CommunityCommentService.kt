@@ -15,8 +15,4 @@ interface CommunityCommentService {
     fun updateComment(updateCommentRequest: UpdateCommentRequest): CommunityCommentResponse
 
     fun deleteComment(commentId: Long): String
-
-    fun likeComment(communityCommentLikeRequest: CommunityCommentLikeRequest): CommunityLikeResponse
-
-    fun unlikeComment(commentId: Long): CommunityLikeResponse
 }

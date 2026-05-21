@@ -4,9 +4,9 @@ import spring.springserver.domain.community.comment.entity.CommunityComment
 import java.time.LocalDateTime
 
 data class CommunityCommentResponse(
-    val id: Long,
+    val id: Long?,
 
-    val postId: Long,
+    val postId: Long?,
 
     val username: String,
 
@@ -25,8 +25,8 @@ data class CommunityCommentResponse(
         fun of(communityComment: CommunityComment, likeCount: Long): CommunityCommentResponse {
 
             return CommunityCommentResponse(
-                communityComment.getId()!!,
-                communityComment.communityPost.getId()!!,
+                communityComment.getId(),
+                communityComment.communityPost.getId(),
                 communityComment.member.username,
                 communityComment.content,
                 communityComment.isEdited,

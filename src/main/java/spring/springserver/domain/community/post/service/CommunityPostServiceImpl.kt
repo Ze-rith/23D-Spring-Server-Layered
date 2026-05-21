@@ -3,18 +3,19 @@ package spring.springserver.domain.community.post.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import spring.springserver.domain.community.comment.repository.CommunityCommentRepository
+import spring.springserver.domain.community.global.data.response.DeleteResponse
 import spring.springserver.domain.community.post.data.request.CreatePostRequest
 import spring.springserver.domain.community.post.data.request.UpdatePostRequest
 import spring.springserver.domain.community.post.data.response.CommunityPostResponse
+import spring.springserver.domain.community.post.data.response.CommunityPostResponse.Companion.toPostResponse
 import spring.springserver.domain.community.post.data.response.CreatePostResponse
 import spring.springserver.domain.community.post.data.response.UpdatePostResponse
-import spring.springserver.domain.community.post.entity.CommunityPost
 import spring.springserver.domain.community.post.repository.CommunityPostRepository
 import spring.springserver.domain.community.global.service.CommunityAuthorizationService
 import java.time.LocalDateTime
 
 @Service
-@Transactional
+@Transactional(rollbackFor = [Exception::class])
 class CommunityPostServiceImpl(private val communityPostRepository: CommunityPostRepository,
                                     private val communityCommentRepository: CommunityCommentRepository,
                                     private val communityAuthorizationService: CommunityAuthorizationService) : CommunityPostService {
@@ -46,7 +47,7 @@ class CommunityPostServiceImpl(private val communityPostRepository: CommunityPos
         return UpdatePostResponse.of(communityPost)
     }
 
-    override fun deletePost(postId: Long) {
+    override fun deletePost(postId: Long): String {
 
         val member = communityAuthorizationService.getCurrentMember()
 
@@ -58,6 +59,8 @@ class CommunityPostServiceImpl(private val communityPostRepository: CommunityPos
         )
 
         communityPost.softDelete(LocalDateTime.now())
+
+        return DeleteResponse.of("삭제되었습니다.")
     }
 
     override fun getPost(postId: Long): CommunityPostResponse {
@@ -66,7 +69,7 @@ class CommunityPostServiceImpl(private val communityPostRepository: CommunityPos
 
         communityPost.increaseViewCount()
 
-        return toPostResponse(communityPost)
+        return toPostResponse(communityPost, communityCommentRepository)
     }
 
     @Transactional(readOnly = true)
@@ -75,16 +78,6 @@ class CommunityPostServiceImpl(private val communityPostRepository: CommunityPos
         val normalizedKeyword = keyword.trim()
 
         return communityPostRepository.searchPosts(normalizedKeyword)
-            .map(::toPostResponse)
-    }
-
-    private fun toPostResponse(communityPost: CommunityPost): CommunityPostResponse {
-
-        val postId = communityPost.getId()!!
-
-        return CommunityPostResponse.of(
-            communityPost = communityPost,
-            commentCount = communityCommentRepository.countByCommunityPostIdAndDeletedAtIsNull(postId),
-        )
+            .map { communityPost -> toPostResponse(communityPost, communityCommentRepository) }
     }
 }
