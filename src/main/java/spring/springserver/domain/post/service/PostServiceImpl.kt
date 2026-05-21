@@ -96,6 +96,7 @@ class PostServiceImpl (private val postRepository: PostRepository,
     }
 
     private fun validatePostAuthor(post: Post) {
+        
         val username = SecurityContextHolder.getContext().authentication?.name
             ?: throw ApplicationException(AuthStatusCode.AVAILABLE_ACCESS_TOKEN)
 
