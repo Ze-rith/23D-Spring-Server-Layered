@@ -1,7 +1,5 @@
 package spring.springserver.domain.post.service
 
-import jakarta.persistence.PrePersist
-import jakarta.persistence.PreUpdate
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,10 +23,10 @@ class PostService (private val postRepository: PostRepository,
     fun createPost(createPostRequest: CreatePostRequest): PostResponse {
 
         val username = SecurityContextHolder.getContext().authentication?.name
-            ?: throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS)
+            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
 
         val member = memberRepository.findByUsername(username)
-            ?: throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS)
+            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
 
         val post = Post(
             title = createPostRequest.title,
@@ -96,10 +94,10 @@ class PostService (private val postRepository: PostRepository,
 
     private fun validatePostAuthor(post: Post) {
         val username = SecurityContextHolder.getContext().authentication?.name
-            ?: throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS)
+            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
 
         val memberId = memberRepository.findByUsername(username)?.getId()
-            ?: throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS)
+            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
 
         if (post.member?.getId() != memberId) {
             throw ApplicationException(AuthStatusCode.FORBIDDEN_POST_ACCESS)
