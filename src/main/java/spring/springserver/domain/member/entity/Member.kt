@@ -48,5 +48,5 @@ class Member (
 
    fun getId(): Long? = id
 
-    fun update(name: String) = also { this.name = name }
+    fun update(name: String) { this.name = name }
 }

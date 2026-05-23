@@ -42,6 +42,7 @@ class PostServiceImpl (private val postRepository: PostRepository,
         return PostResponse.of(postRepository.save(post))
     }
 
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun findPost(id: Long): PostResponse {
 
         val post = postRepository.findPostById(id)
@@ -112,4 +113,5 @@ class PostServiceImpl (private val postRepository: PostRepository,
             throw ApplicationException(PostStatusCode.FORBIDDEN_POST_ACCESS)
         }
     }
+
 }

@@ -9,5 +9,5 @@ data class CreatePostRequest(
     val title: String,
 
     @field:Size(max = 2000, message = "내용은 2000자 이하여야 합니다.")
-    val content: String ?= null,
+    val content: String,
 )

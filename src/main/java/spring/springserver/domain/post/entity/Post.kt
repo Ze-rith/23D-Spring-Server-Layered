@@ -17,7 +17,7 @@ class Post (
     var title: String,
 
     @Column(length = 2000)
-    var content: String?,
+    var content: String,
 
     var viewCount: Int = 0,
 
@@ -35,5 +35,5 @@ class Post (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 }

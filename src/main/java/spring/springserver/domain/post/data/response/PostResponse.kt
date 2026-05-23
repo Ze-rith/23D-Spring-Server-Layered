@@ -4,12 +4,11 @@ import spring.springserver.domain.post.entity.Post
 import java.time.LocalDateTime
 
 data class PostResponse(
-
     val id: Long?,
 
     val title: String,
 
-    val content: String?,
+    val content: String,
 
     val viewCount: Int,
 
