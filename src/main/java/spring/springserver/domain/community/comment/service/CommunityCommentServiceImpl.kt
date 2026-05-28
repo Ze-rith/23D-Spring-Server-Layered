@@ -7,14 +7,9 @@ import spring.springserver.domain.community.comment.data.request.UpdateCommentRe
 import spring.springserver.domain.community.comment.data.response.CommunityCommentResponse
 import spring.springserver.domain.community.comment.entity.CommunityComment
 import spring.springserver.domain.community.comment.repository.CommunityCommentRepository
-import spring.springserver.domain.community.like.data.request.CommunityCommentLikeRequest
-import spring.springserver.domain.community.like.data.response.CommunityLikeResponse
-import spring.springserver.domain.community.like.entity.CommunityCommentLike
 import spring.springserver.domain.community.like.repository.CommunityCommentLikeRepository
-import spring.springserver.domain.community.global.data.response.DeleteResponse
-import spring.springserver.domain.community.global.service.CommunityAuthorizationService
-import spring.springserver.global.exception.exception.ApplicationException
-import spring.springserver.global.exception.status_code.CommonStatusCode
+import spring.springserver.domain.community.common.data.response.DeleteResponse
+import spring.springserver.domain.community.common.service.CommunityAuthorizationService
 import java.time.LocalDateTime
 
 @Service

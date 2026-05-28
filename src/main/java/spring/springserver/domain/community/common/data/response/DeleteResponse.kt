@@ -1,4 +1,4 @@
-package spring.springserver.domain.community.global.data.response
+package spring.springserver.domain.community.common.data.response
 
 data class DeleteResponse(
     val message: String

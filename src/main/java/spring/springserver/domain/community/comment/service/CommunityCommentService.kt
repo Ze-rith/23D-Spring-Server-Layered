@@ -3,9 +3,7 @@ package spring.springserver.domain.community.comment.service
 import spring.springserver.domain.community.comment.data.request.CreateCommentRequest
 import spring.springserver.domain.community.comment.data.request.UpdateCommentRequest
 import spring.springserver.domain.community.comment.data.response.CommunityCommentResponse
-import spring.springserver.domain.community.global.data.response.DeleteResponse
-import spring.springserver.domain.community.like.data.request.CommunityCommentLikeRequest
-import spring.springserver.domain.community.like.data.response.CommunityLikeResponse
+import spring.springserver.domain.community.common.data.response.DeleteResponse
 
 interface CommunityCommentService {
 

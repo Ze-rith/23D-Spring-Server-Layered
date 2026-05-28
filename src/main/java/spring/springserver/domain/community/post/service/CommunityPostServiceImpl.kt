@@ -3,7 +3,7 @@ package spring.springserver.domain.community.post.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import spring.springserver.domain.community.comment.repository.CommunityCommentRepository
-import spring.springserver.domain.community.global.data.response.DeleteResponse
+import spring.springserver.domain.community.common.data.response.DeleteResponse
 import spring.springserver.domain.community.post.data.request.CreatePostRequest
 import spring.springserver.domain.community.post.data.request.UpdatePostRequest
 import spring.springserver.domain.community.post.data.response.CommunityPostResponse
@@ -11,7 +11,7 @@ import spring.springserver.domain.community.post.data.response.CommunityPostResp
 import spring.springserver.domain.community.post.data.response.CreatePostResponse
 import spring.springserver.domain.community.post.data.response.UpdatePostResponse
 import spring.springserver.domain.community.post.repository.CommunityPostRepository
-import spring.springserver.domain.community.global.service.CommunityAuthorizationService
+import spring.springserver.domain.community.common.service.CommunityAuthorizationService
 import java.time.LocalDateTime
 
 @Service

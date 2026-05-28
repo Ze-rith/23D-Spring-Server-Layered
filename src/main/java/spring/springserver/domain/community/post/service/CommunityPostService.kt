@@ -1,6 +1,6 @@
 package spring.springserver.domain.community.post.service
 
-import spring.springserver.domain.community.global.data.response.DeleteResponse
+import spring.springserver.domain.community.common.data.response.DeleteResponse
 import spring.springserver.domain.community.post.data.request.CreatePostRequest
 import spring.springserver.domain.community.post.data.request.UpdatePostRequest
 import spring.springserver.domain.community.post.data.response.CommunityPostResponse

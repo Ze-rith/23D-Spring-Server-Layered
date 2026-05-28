@@ -2,7 +2,7 @@ package spring.springserver.domain.community.like.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import spring.springserver.domain.community.global.service.CommunityAuthorizationService
+import spring.springserver.domain.community.common.service.CommunityAuthorizationService
 import spring.springserver.domain.community.like.data.request.CommunityCommentLikeRequest
 import spring.springserver.domain.community.like.data.response.CommunityLikeResponse
 import spring.springserver.domain.community.like.entity.CommunityCommentLike
