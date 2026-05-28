@@ -83,7 +83,7 @@ class PostServiceImpl (private val postRepository: PostRepository,
         return PostResponse.of(post)
     }
 
-    override fun deletePost(id: Long) : DeletedPostResponse {
+    override fun deletePost(id: Long): DeletedPostResponse {
 
         val post = postRepository.findPostById(id)
             ?: throw ApplicationException(PostStatusCode.INVALID_POST)
