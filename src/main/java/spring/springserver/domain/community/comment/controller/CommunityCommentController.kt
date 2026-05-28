@@ -13,6 +13,7 @@ import spring.springserver.domain.community.comment.data.request.CreateCommentRe
 import spring.springserver.domain.community.comment.data.request.UpdateCommentRequest
 import spring.springserver.domain.community.comment.data.response.CommunityCommentResponse
 import spring.springserver.domain.community.comment.service.CommunityCommentService
+import spring.springserver.domain.community.common.data.response.DeleteResponse
 import spring.springserver.global.data.BaseResponse
 
 @RestController
@@ -20,7 +21,7 @@ import spring.springserver.global.data.BaseResponse
 class CommunityCommentController(private val communityCommentService: CommunityCommentService) {
 
     @PostMapping
-    fun createComment(@RequestBody @Valid createCommentRequest: CreateCommentRequest): BaseResponse<CommunityCommentResponse> {
+    fun createComment(@Valid @RequestBody createCommentRequest: CreateCommentRequest): BaseResponse<CommunityCommentResponse> {
 
         return BaseResponse.ok(communityCommentService.createComment(createCommentRequest))
     }
@@ -32,13 +33,13 @@ class CommunityCommentController(private val communityCommentService: CommunityC
     }
 
     @PatchMapping
-    fun updateComment(@RequestBody @Valid updateCommentRequest: UpdateCommentRequest): BaseResponse<CommunityCommentResponse> {
+    fun updateComment(@Valid @RequestBody updateCommentRequest: UpdateCommentRequest): BaseResponse<CommunityCommentResponse> {
 
         return BaseResponse.ok(communityCommentService.updateComment(updateCommentRequest))
     }
 
     @DeleteMapping
-    fun deleteComment(@RequestParam commentId: Long): BaseResponse<String> {
+    fun deleteComment(@RequestParam commentId: Long): BaseResponse<DeleteResponse> {
 
         return BaseResponse.ok(communityCommentService.deleteComment(commentId))
     }

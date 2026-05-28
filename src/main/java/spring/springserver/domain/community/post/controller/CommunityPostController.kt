@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import spring.springserver.domain.community.common.data.response.DeleteResponse
 import spring.springserver.domain.community.post.data.request.CreatePostRequest
 import spring.springserver.domain.community.post.data.request.UpdatePostRequest
 import spring.springserver.domain.community.post.data.response.CommunityPostResponse
@@ -22,19 +23,19 @@ import spring.springserver.global.data.BaseResponse
 class CommunityPostController(private val communityPostService: CommunityPostService) {
 
     @PostMapping
-    fun createPost(@RequestBody @Valid createPostRequest: CreatePostRequest): BaseResponse<CreatePostResponse> {
+    fun createPost(@Valid @RequestBody createPostRequest: CreatePostRequest): BaseResponse<CreatePostResponse> {
 
         return BaseResponse.ok(communityPostService.createPost(createPostRequest))
     }
 
     @PatchMapping
-    fun updatePost(@RequestBody @Valid updatePostRequest: UpdatePostRequest): BaseResponse<UpdatePostResponse> {
+    fun updatePost(@Valid @RequestBody updatePostRequest: UpdatePostRequest): BaseResponse<UpdatePostResponse> {
 
         return BaseResponse.ok(communityPostService.updatePost(updatePostRequest))
     }
 
     @DeleteMapping
-    fun deletePost(@RequestParam postId: Long): BaseResponse<String> {
+    fun deletePost(@RequestParam postId: Long): BaseResponse<DeleteResponse> {
 
         return BaseResponse.ok(communityPostService.deletePost(postId))
     }
