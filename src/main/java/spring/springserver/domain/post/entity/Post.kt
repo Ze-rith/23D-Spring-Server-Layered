@@ -28,7 +28,7 @@ class Post (
 
     var isDeleted: Boolean = false,
 
-    var imgCount: Int = 0,
+    var deletedAt: LocalDateTime? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_member_id", nullable = false)

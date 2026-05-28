@@ -1,5 +1,6 @@
 package spring.springserver.domain.post.service
 
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -99,6 +100,7 @@ class PostServiceImpl (private val postRepository: PostRepository,
         validatePostAuthor(post)
 
         post.isDeleted = true
+        post.deletedAt = LocalDateTime.now()
 
         return DeletedPostResponse.of("삭제되었습니다")
     }
@@ -117,4 +119,21 @@ class PostServiceImpl (private val postRepository: PostRepository,
         }
     }
 
+    companion object {
+
+        private const val RETENTION_DAYS = 30L
+    }
+
+    @Scheduled(cron = "0 0 4 * * *")
+    fun purgeSoftDeletedContents() {
+
+        val threshold = LocalDateTime.now().minusDays(RETENTION_DAYS)
+
+        val expiredPosts = postRepository.findAllByIsDeletedTrueAndDeletedAtBefore(threshold)
+
+        if (expiredPosts.isNotEmpty()) {
+
+            postRepository.deleteAll(expiredPosts)
+        }
+    }
 }
