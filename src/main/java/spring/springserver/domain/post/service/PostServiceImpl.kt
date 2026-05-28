@@ -31,13 +31,9 @@ class PostServiceImpl (private val postRepository: PostRepository,
 
         val post = Post(
             title = createPostRequest.title,
-
             content = createPostRequest.content,
-
             updatedAt = LocalDateTime.now(),
-
-            member = member
-        )
+            member = member)
 
         return PostResponse.of(postRepository.save(post))
     }

@@ -1,7 +1,6 @@
 package spring.springserver.domain.post.data.response
 
 data class DeletedPostResponse(
-
     val message: String
 ) {
 
