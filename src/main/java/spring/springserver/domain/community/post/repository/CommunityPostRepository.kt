@@ -20,7 +20,7 @@ interface CommunityPostRepository : JpaRepository<CommunityPost, Long> {
               or coalesce(lower(c.username), '') like lower(concat('%', :keyword, '%'))
               or coalesce(lower(m.username), '') like lower(concat('%', :keyword, '%'))
           )
-        order by c.createdAt desc
+        order by c.updatedAt desc
         """
     )
     fun searchPosts(@Param("keyword") keyword: String): List<CommunityPost>
