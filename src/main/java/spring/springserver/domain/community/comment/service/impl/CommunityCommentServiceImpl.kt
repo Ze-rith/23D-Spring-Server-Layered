@@ -1,4 +1,4 @@
-package spring.springserver.domain.community.comment.service
+package spring.springserver.domain.community.comment.service.impl
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -7,9 +7,10 @@ import spring.springserver.domain.community.comment.data.request.UpdateCommentRe
 import spring.springserver.domain.community.comment.data.response.CommunityCommentResponse
 import spring.springserver.domain.community.comment.entity.CommunityComment
 import spring.springserver.domain.community.comment.repository.CommunityCommentRepository
-import spring.springserver.domain.community.like.repository.CommunityCommentLikeRepository
+import spring.springserver.domain.community.comment.service.CommunityCommentService
 import spring.springserver.domain.community.common.data.response.DeleteResponse
 import spring.springserver.domain.community.common.service.CommunityAuthorizationService
+import spring.springserver.domain.community.like.repository.CommunityCommentLikeRepository
 import java.time.LocalDateTime
 
 @Service
@@ -26,7 +27,8 @@ class CommunityCommentServiceImpl(
 
         val communityPost = communityAuthorizationService.getActivePost(createCommentRequest.postId)
 
-        val communityComment = communityCommentRepository.save(CommunityComment(
+        val communityComment = communityCommentRepository.save(
+            CommunityComment(
                 member = member,
                 communityPost = communityPost,
                 content = createCommentRequest.content.trim(),
@@ -34,7 +36,7 @@ class CommunityCommentServiceImpl(
             )
         )
 
-        return CommunityCommentResponse.of(
+        return CommunityCommentResponse.Companion.of(
             communityComment = communityComment,
             likeCount = communityCommentLikeRepository.countByCommunityCommentId(communityComment.getId()!!),
         )
@@ -49,7 +51,7 @@ class CommunityCommentServiceImpl(
             .findAllByCommunityPostIdAndDeletedAtIsNullOrderByCreatedAtAsc(postId)
             .map {
 
-                communityComment -> CommunityCommentResponse.of(
+                communityComment -> CommunityCommentResponse.Companion.of(
                     communityComment = communityComment,
                     likeCount = communityCommentLikeRepository.countByCommunityCommentId(communityComment.getId()!!),
                 )
@@ -69,7 +71,7 @@ class CommunityCommentServiceImpl(
 
         communityComment.update(updateCommentRequest.content.trim())
 
-        return CommunityCommentResponse.of(
+        return CommunityCommentResponse.Companion.of(
             communityComment = communityComment,
             likeCount = communityCommentLikeRepository.countByCommunityCommentId(communityComment.getId()!!),
         )
@@ -88,6 +90,6 @@ class CommunityCommentServiceImpl(
 
         communityComment.softDelete(LocalDateTime.now())
 
-        return DeleteResponse.of("삭제되었습니다.")
+        return DeleteResponse.Companion.of("삭제되었습니다.")
     }
 }

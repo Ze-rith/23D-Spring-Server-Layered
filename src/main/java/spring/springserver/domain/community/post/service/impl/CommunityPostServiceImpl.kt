@@ -1,17 +1,17 @@
-package spring.springserver.domain.community.post.service
+package spring.springserver.domain.community.post.service.impl
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import spring.springserver.domain.community.comment.repository.CommunityCommentRepository
 import spring.springserver.domain.community.common.data.response.DeleteResponse
+import spring.springserver.domain.community.common.service.CommunityAuthorizationService
 import spring.springserver.domain.community.post.data.request.CreatePostRequest
 import spring.springserver.domain.community.post.data.request.UpdatePostRequest
 import spring.springserver.domain.community.post.data.response.CommunityPostResponse
-import spring.springserver.domain.community.post.data.response.CommunityPostResponse.Companion.toPostResponse
 import spring.springserver.domain.community.post.data.response.CreatePostResponse
 import spring.springserver.domain.community.post.data.response.UpdatePostResponse
 import spring.springserver.domain.community.post.repository.CommunityPostRepository
-import spring.springserver.domain.community.common.service.CommunityAuthorizationService
+import spring.springserver.domain.community.post.service.CommunityPostService
 import java.time.LocalDateTime
 
 @Service
@@ -28,7 +28,7 @@ class CommunityPostServiceImpl(
 
         val communityPost = communityPostRepository.save(createPostRequest.toEntity(member))
 
-        return CreatePostResponse.of(communityPost)
+        return CreatePostResponse.Companion.of(communityPost)
     }
 
     override fun updatePost(updatePostRequest: UpdatePostRequest): UpdatePostResponse {
@@ -47,7 +47,7 @@ class CommunityPostServiceImpl(
             fileUrl = updatePostRequest.fileUrl?.trim()?.takeIf { it.isNotBlank() },
         )
 
-        return UpdatePostResponse.of(communityPost)
+        return UpdatePostResponse.Companion.of(communityPost)
     }
 
     override fun deletePost(postId: Long): DeleteResponse {
@@ -63,7 +63,7 @@ class CommunityPostServiceImpl(
 
         communityPost.softDelete(LocalDateTime.now())
 
-        return DeleteResponse.of("삭제되었습니다.")
+        return DeleteResponse.Companion.of("삭제되었습니다.")
     }
 
     @Transactional(readOnly = true)
@@ -73,7 +73,7 @@ class CommunityPostServiceImpl(
 
         communityPost.increaseViewCount()
 
-        return toPostResponse(communityPost, communityCommentRepository)
+        return CommunityPostResponse.Companion.toPostResponse(communityPost, communityCommentRepository)
     }
 
     @Transactional(readOnly = true)
@@ -85,7 +85,7 @@ class CommunityPostServiceImpl(
             .map {
 
                 communityPost ->
-                toPostResponse(
+                CommunityPostResponse.Companion.toPostResponse(
                     communityPost,
                     communityCommentRepository
                 )
