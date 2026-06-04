@@ -120,4 +120,46 @@ public class FileService {
             );
         }
     }
+
+    public void deleteFile(String fileUrl) {
+
+        if (fileUrl == null || fileUrl.isBlank()) {
+
+            return;
+        }
+
+        String filePrefix = "/files/";
+
+        if (!fileUrl.startsWith(filePrefix)) {
+
+            throw new ApplicationException(FileStatusCode.FILE_DELETE_FAILED);
+        }
+
+        try {
+
+            Path uploadPath = Path.of(fileDirectory)
+                    .toAbsolutePath()
+                    .normalize();
+
+            String storedFileName = fileUrl.substring(filePrefix.length());
+
+            Path targetPath = uploadPath
+                    .resolve(storedFileName)
+                    .normalize();
+
+            if (!targetPath.startsWith(uploadPath)) {
+
+                throw new ApplicationException(FileStatusCode.FILE_DELETE_FAILED);
+            }
+
+            Files.deleteIfExists(targetPath);
+
+        } catch (IOException ioException) {
+
+            throw new ApplicationException(
+                    FileStatusCode.FILE_DELETE_FAILED,
+                    ioException
+            );
+        }
+    }
 }
