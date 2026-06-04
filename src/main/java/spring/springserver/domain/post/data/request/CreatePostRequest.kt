@@ -2,6 +2,7 @@ package spring.springserver.domain.post.data.request
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
+import org.springframework.web.multipart.MultipartFile
 import spring.springserver.domain.member.entity.Member
 import spring.springserver.domain.post.entity.Post
 import java.time.LocalDateTime
@@ -14,6 +15,8 @@ data class CreatePostRequest(
     @field:NotBlank
     @field:Size(max = 2000, message = "내용은 2000자 이하여야 합니다.")
     val content: String,
+
+    val multipartFile: MultipartFile?
 ) {
 
     fun toEntity(member: Member): Post {
@@ -22,7 +25,7 @@ data class CreatePostRequest(
             title = title,
             content = content,
             updatedAt = LocalDateTime.now(),
-            member = member,
+            member = member
         )
     }
 }
