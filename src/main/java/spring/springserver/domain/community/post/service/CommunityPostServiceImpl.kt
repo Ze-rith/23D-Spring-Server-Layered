@@ -16,9 +16,11 @@ import java.time.LocalDateTime
 
 @Service
 @Transactional(rollbackFor = [Exception::class])
-class CommunityPostServiceImpl(private val communityPostRepository: CommunityPostRepository,
-                                    private val communityCommentRepository: CommunityCommentRepository,
-                                    private val communityAuthorizationService: CommunityAuthorizationService) : CommunityPostService {
+class CommunityPostServiceImpl(
+    private val communityPostRepository: CommunityPostRepository,
+    private val communityCommentRepository: CommunityCommentRepository,
+    private val communityAuthorizationService: CommunityAuthorizationService
+) : CommunityPostService {
 
     override fun createPost(createPostRequest: CreatePostRequest): CreatePostResponse {
 
@@ -36,7 +38,8 @@ class CommunityPostServiceImpl(private val communityPostRepository: CommunityPos
         val communityPost = communityAuthorizationService
             .getActivePost(updatePostRequest.postId)
 
-        communityAuthorizationService.validateOwner(member, communityPost.member.getId())
+        communityAuthorizationService.validateOwner(member,
+                                          communityPost.member.getId())
 
         communityPost.update(
             title = updatePostRequest.title.trim(),
@@ -79,6 +82,13 @@ class CommunityPostServiceImpl(private val communityPostRepository: CommunityPos
         val normalizedKeyword = keyword.trim()
 
         return communityPostRepository.searchPosts(normalizedKeyword)
-            .map { communityPost -> toPostResponse(communityPost, communityCommentRepository) }
+            .map {
+
+                communityPost ->
+                toPostResponse(
+                    communityPost,
+                    communityCommentRepository
+                )
+            }
     }
 }

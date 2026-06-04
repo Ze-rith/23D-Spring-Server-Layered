@@ -20,7 +20,9 @@ import spring.springserver.global.data.BaseResponse
 
 @RestController
 @RequestMapping("/api/community/post")
-class CommunityPostController(private val communityPostService: CommunityPostService) {
+class CommunityPostController(
+    private val communityPostService: CommunityPostService
+) {
 
     @PostMapping
     fun createPost(@Valid @RequestBody createPostRequest: CreatePostRequest): BaseResponse<CreatePostResponse> {

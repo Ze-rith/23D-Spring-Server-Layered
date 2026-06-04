@@ -18,7 +18,9 @@ import spring.springserver.global.data.BaseResponse
 
 @RestController
 @RequestMapping("/api/community/comment")
-class CommunityCommentController(private val communityCommentService: CommunityCommentService) {
+class CommunityCommentController(
+    private val communityCommentService: CommunityCommentService
+) {
 
     @PostMapping
     fun createComment(@Valid @RequestBody createCommentRequest: CreateCommentRequest): BaseResponse<CommunityCommentResponse> {
