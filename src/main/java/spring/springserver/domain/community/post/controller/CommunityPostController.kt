@@ -30,18 +30,6 @@ class CommunityPostController(
         return BaseResponse.ok(communityPostService.createPost(createPostRequest))
     }
 
-    @PatchMapping
-    fun updatePost(@Valid @RequestBody updatePostRequest: UpdatePostRequest): BaseResponse<UpdatePostResponse> {
-
-        return BaseResponse.ok(communityPostService.updatePost(updatePostRequest))
-    }
-
-    @DeleteMapping
-    fun deletePost(@RequestParam postId: Long): BaseResponse<DeleteResponse> {
-
-        return BaseResponse.ok(communityPostService.deletePost(postId))
-    }
-
     @GetMapping
     fun getPost(@RequestParam postId: Long): BaseResponse<CommunityPostResponse> {
 
@@ -52,5 +40,17 @@ class CommunityPostController(
     fun searchPosts(@RequestParam keyword: String): BaseResponse<List<CommunityPostResponse>> {
 
         return BaseResponse.ok(communityPostService.searchPosts(keyword))
+    }
+
+    @PatchMapping
+    fun updatePost(@Valid @RequestBody updatePostRequest: UpdatePostRequest): BaseResponse<UpdatePostResponse> {
+
+        return BaseResponse.ok(communityPostService.updatePost(updatePostRequest))
+    }
+
+    @DeleteMapping
+    fun deletePost(@RequestParam postId: Long): BaseResponse<DeleteResponse> {
+
+        return BaseResponse.ok(communityPostService.deletePost(postId))
     }
 }

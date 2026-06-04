@@ -28,7 +28,7 @@ class CommunityPostServiceImpl(
 
         val communityPost = communityPostRepository.save(createPostRequest.toEntity(member))
 
-        return CreatePostResponse.Companion.of(communityPost)
+        return CreatePostResponse.of(communityPost)
     }
 
     override fun updatePost(updatePostRequest: UpdatePostRequest): UpdatePostResponse {
@@ -47,7 +47,7 @@ class CommunityPostServiceImpl(
             fileUrl = updatePostRequest.fileUrl?.trim()?.takeIf { it.isNotBlank() },
         )
 
-        return UpdatePostResponse.Companion.of(communityPost)
+        return UpdatePostResponse.of(communityPost)
     }
 
     override fun deletePost(postId: Long): DeleteResponse {
@@ -73,7 +73,7 @@ class CommunityPostServiceImpl(
 
         communityPost.increaseViewCount()
 
-        return CommunityPostResponse.Companion.toPostResponse(communityPost, communityCommentRepository)
+        return CommunityPostResponse.toPostResponse(communityPost, communityCommentRepository)
     }
 
     @Transactional(readOnly = true)
@@ -85,7 +85,7 @@ class CommunityPostServiceImpl(
             .map {
 
                 communityPost ->
-                CommunityPostResponse.Companion.toPostResponse(
+                CommunityPostResponse.toPostResponse(
                     communityPost,
                     communityCommentRepository
                 )

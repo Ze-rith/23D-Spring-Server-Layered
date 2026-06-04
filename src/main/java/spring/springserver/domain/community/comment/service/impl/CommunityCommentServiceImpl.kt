@@ -36,7 +36,7 @@ class CommunityCommentServiceImpl(
             )
         )
 
-        return CommunityCommentResponse.Companion.of(
+        return CommunityCommentResponse.of(
             communityComment = communityComment,
             likeCount = communityCommentLikeRepository.countByCommunityCommentId(communityComment.getId()!!),
         )
@@ -51,7 +51,7 @@ class CommunityCommentServiceImpl(
             .findAllByCommunityPostIdAndDeletedAtIsNullOrderByCreatedAtAsc(postId)
             .map {
 
-                communityComment -> CommunityCommentResponse.Companion.of(
+                communityComment -> CommunityCommentResponse.of(
                     communityComment = communityComment,
                     likeCount = communityCommentLikeRepository.countByCommunityCommentId(communityComment.getId()!!),
                 )
@@ -71,7 +71,7 @@ class CommunityCommentServiceImpl(
 
         communityComment.update(updateCommentRequest.content.trim())
 
-        return CommunityCommentResponse.Companion.of(
+        return CommunityCommentResponse.of(
             communityComment = communityComment,
             likeCount = communityCommentLikeRepository.countByCommunityCommentId(communityComment.getId()!!),
         )
@@ -90,6 +90,6 @@ class CommunityCommentServiceImpl(
 
         communityComment.softDelete(LocalDateTime.now())
 
-        return DeleteResponse.Companion.of("삭제되었습니다.")
+        return DeleteResponse.of("삭제되었습니다.")
     }
 }
