@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import spring.springserver.domain.auth.exception.AuthStatusCode
-import spring.springserver.domain.auth.service.TokenService
+import spring.springserver.domain.auth.service.token.impl.TokenServiceImpl
 import spring.springserver.domain.member.data.request.ChangeUsernameRequest
 import spring.springserver.domain.member.data.request.FindUsernameRequest
 import spring.springserver.domain.member.data.request.PasswordResetRequest
@@ -19,9 +19,11 @@ import spring.springserver.global.exception.exception.ApplicationException
 
 @Service
 @Transactional(rollbackFor = [Exception::class])
-class MemberServiceImpl(private val memberRepository: MemberRepository,
-                        private val tokenService: TokenService,
-                        private val passwordEncoder: PasswordEncoder) : MemberService {
+class MemberServiceImpl(
+    private val memberRepository: MemberRepository,
+    private val tokenService: TokenServiceImpl,
+    private val passwordEncoder: PasswordEncoder
+) : MemberService {
 
     override fun deleteAccount(httpServletRequest: HttpServletRequest,
                                httpServletResponse: HttpServletResponse): DeleteAccountResponse {
@@ -61,7 +63,7 @@ class MemberServiceImpl(private val memberRepository: MemberRepository,
             httpServletRequest,
         )
 
-        if(accessToken == null || accessToken.isBlank()) {
+        if(accessToken.isNullOrBlank()) {
 
             throw ApplicationException(AuthStatusCode.INVALID_JWT)
         }
@@ -97,9 +99,9 @@ class MemberServiceImpl(private val memberRepository: MemberRepository,
                 httpServletRequest
         )
 
-        if (accessToken == null || accessToken.isBlank()) {
+        if (accessToken.isNullOrBlank()) {
 
-           throw ApplicationException(AuthStatusCode.INVALID_JWT);
+           throw ApplicationException(AuthStatusCode.INVALID_JWT)
         }
 
         val member = memberRepository.findByUsername(tokenService.getCurrentUsername(httpServletRequest))
@@ -107,12 +109,12 @@ class MemberServiceImpl(private val memberRepository: MemberRepository,
 
         if (member.email != changeUsernameRequest.email) {
 
-            throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS);
+            throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS)
         }
 
         if (memberRepository.existsByUsername(changeUsernameRequest.newUsername)) {
 
-            throw ApplicationException(AuthStatusCode.USERNAME_ALREADY_EXIST);
+            throw ApplicationException(AuthStatusCode.USERNAME_ALREADY_EXIST)
         }
 
         member.username = changeUsernameRequest.newUsername
