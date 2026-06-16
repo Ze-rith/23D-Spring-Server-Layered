@@ -4,8 +4,10 @@ import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -35,17 +37,28 @@ class CommunityPostController(
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createPostWithFile(
-        @Valid @RequestPart("request") createPostRequest: CreatePostRequest,
+        @Valid @ModelAttribute createPostRequest: CreatePostRequest,
         @RequestPart(value = "multipartFile", required = false) multipartFile: MultipartFile?
     ): BaseResponse<CreatePostResponse> {
 
-        return BaseResponse.ok(communityPostService.createPost(createPostRequest, multipartFile))
+        return BaseResponse.ok(
+            communityPostService.createPost(
+                createPostRequest,
+                multipartFile
+            )
+        )
+    }
+
+    @GetMapping("/{postId}")
+    fun getPost(@PathVariable postId: Long): BaseResponse<CommunityPostResponse> {
+
+        return BaseResponse.ok(communityPostService.getPost(postId))
     }
 
     @GetMapping
-    fun getPost(@RequestParam postId: Long): BaseResponse<CommunityPostResponse> {
+    fun getPosts(): BaseResponse<List<CommunityPostResponse>> {
 
-        return BaseResponse.ok(communityPostService.getPost(postId))
+        return BaseResponse.ok(communityPostService.getPosts())
     }
 
     @GetMapping("/search")
@@ -62,11 +75,16 @@ class CommunityPostController(
 
     @PatchMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updatePostWithFile(
-        @Valid @RequestPart("request") updatePostRequest: UpdatePostRequest,
+        @Valid @ModelAttribute updatePostRequest: UpdatePostRequest,
         @RequestPart(value = "multipartFile", required = false) multipartFile: MultipartFile?
     ): BaseResponse<UpdatePostResponse> {
 
-        return BaseResponse.ok(communityPostService.updatePost(updatePostRequest, multipartFile))
+        return BaseResponse.ok(
+            communityPostService.updatePost(
+                updatePostRequest,
+                multipartFile
+            )
+        )
     }
 
     @DeleteMapping

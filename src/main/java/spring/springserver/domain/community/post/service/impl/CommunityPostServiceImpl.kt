@@ -84,6 +84,18 @@ class CommunityPostServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    override fun getPosts(): List<CommunityPostResponse> {
+
+        return communityPostRepository.findAllActivePosts()
+            .map { communityPost ->
+                CommunityPostResponse.toPostResponse(
+                    communityPost,
+                    communityCommentRepository
+                )
+            }
+    }
+
+    @Transactional(readOnly = true)
     override fun getPost(postId: Long): CommunityPostResponse {
 
         val communityPost = communityAuthorizationService.getActivePost(postId)

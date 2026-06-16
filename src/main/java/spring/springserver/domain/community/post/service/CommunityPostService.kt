@@ -18,5 +18,7 @@ interface CommunityPostService {
 
     fun getPost(postId: Long): CommunityPostResponse
 
+    fun getPosts(): List<CommunityPostResponse>
+
     fun searchPosts(keyword: String): List<CommunityPostResponse>
 }

@@ -15,6 +15,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -112,6 +113,23 @@ public class GlobalExceptionHandler {
     ErrorResponse error = ErrorResponse.of(
         CommonStatusCode.INVALID_ARGUMENT.getCode(),
         "필수 파라미터가 누락되었습니다: " + missingServletRequestParameterException.getParameterName()
+    );
+
+    return ResponseEntity
+        .status(CommonStatusCode.INVALID_ARGUMENT.getHttpStatus())
+        .body(BaseResponse.error(
+                CommonStatusCode.INVALID_ARGUMENT.getHttpStatus(),
+                error
+                )
+        );
+  }
+
+  @ExceptionHandler(MissingServletRequestPartException.class)
+  public ResponseEntity<BaseResponse<Void>> handleMissingServletRequestPartException(MissingServletRequestPartException missingServletRequestPartException) {
+
+    ErrorResponse error = ErrorResponse.of(
+        CommonStatusCode.INVALID_ARGUMENT.getCode(),
+        "필수 요청 파트가 누락되었습니다: " + missingServletRequestPartException.getRequestPartName()
     );
 
     return ResponseEntity

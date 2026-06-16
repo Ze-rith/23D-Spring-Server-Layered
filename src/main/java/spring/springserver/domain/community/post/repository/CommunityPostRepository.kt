@@ -25,6 +25,16 @@ interface CommunityPostRepository : JpaRepository<CommunityPost, Long> {
     )
     fun searchPosts(@Param("keyword") keyword: String): List<CommunityPost>
 
+    @Query(
+        """
+        select c
+        from CommunityPost c
+        where c.deletedAt is null
+        order by c.updatedAt desc
+        """
+    )
+    fun findAllActivePosts(): List<CommunityPost>
+
     fun findByIdAndDeletedAtIsNull(id: Long): CommunityPost?
 
     fun findAllByDeletedAtBefore(deletedAt: LocalDateTime): List<CommunityPost>
