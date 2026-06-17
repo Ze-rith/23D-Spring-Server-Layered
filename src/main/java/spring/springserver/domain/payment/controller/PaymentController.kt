@@ -22,19 +22,25 @@ class PaymentController(
 ) {
 
     @PostMapping("/confirm")
-    fun confirm(@Valid @RequestBody confirmPaymentRequest: ConfirmPaymentRequest): BaseResponse<PaymentResponse> {
+    fun confirm(
+        @Valid @RequestBody confirmPaymentRequest: ConfirmPaymentRequest
+    ): BaseResponse<PaymentResponse> {
 
         return BaseResponse.ok(paymentService.confirm(confirmPaymentRequest))
     }
 
     @GetMapping("/{paymentKey}")
-    fun findByPaymentKey(@PathVariable paymentKey: String): BaseResponse<PaymentResponse> {
+    fun findByPaymentKey(
+        @PathVariable paymentKey: String
+    ): BaseResponse<PaymentResponse> {
 
         return BaseResponse.ok(paymentService.findByPaymentKey(paymentKey))
     }
 
     @GetMapping("/orders/{orderId}")
-    fun findByOrderId(@PathVariable orderId: String): BaseResponse<PaymentResponse> {
+    fun findByOrderId(
+        @PathVariable orderId: String
+    ): BaseResponse<PaymentResponse> {
 
         return BaseResponse.ok(paymentService.findByOrderId(orderId))
     }

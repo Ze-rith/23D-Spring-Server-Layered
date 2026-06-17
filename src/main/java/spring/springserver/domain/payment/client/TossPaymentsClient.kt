@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestClientResponseException
+import org.springframework.web.client.body
 import spring.springserver.domain.payment.data.request.CancelPaymentRequest
 import spring.springserver.domain.payment.data.request.ConfirmPaymentRequest
 import spring.springserver.domain.payment.data.request.VirtualAccountRequest
@@ -30,17 +31,23 @@ class TossPaymentsClient(
         .defaultHeader("TossPayments-Version", tossPaymentsProperties.apiVersion)
         .build()
 
-    fun confirm(confirmPaymentRequest: ConfirmPaymentRequest): PaymentResponse {
+    fun confirm(
+        confirmPaymentRequest: ConfirmPaymentRequest
+    ): PaymentResponse {
 
         return post("/v1/payments/confirm", confirmPaymentRequest)
     }
 
-    fun findByPaymentKey(paymentKey: String): PaymentResponse {
+    fun findByPaymentKey(
+        paymentKey: String
+    ): PaymentResponse {
 
         return get("/v1/payments/{paymentKey}", paymentKey)
     }
 
-    fun findByOrderId(orderId: String): PaymentResponse {
+    fun findByOrderId(
+        orderId: String
+    ): PaymentResponse {
 
         return get("/v1/payments/orders/{orderId}", orderId)
     }
@@ -63,12 +70,14 @@ class TossPaymentsClient(
                 }
                 .body(cancelPaymentRequest)
 
-            requestBodySpec.retrieve().body(JsonNode::class.java)?.let(PaymentResponse::of)
+            requestBodySpec.retrieve().body<JsonNode>()?.let(PaymentResponse::of)
                 ?: PaymentResponse.of(objectMapper.createObjectNode())
         }
     }
 
-    fun issueVirtualAccount(virtualAccountRequest: VirtualAccountRequest): PaymentResponse {
+    fun issueVirtualAccount(
+        virtualAccountRequest: VirtualAccountRequest
+    ): PaymentResponse {
 
         return post("/v1/virtual-accounts", virtualAccountRequest)
     }
@@ -79,12 +88,13 @@ class TossPaymentsClient(
     ): PaymentResponse {
 
         return execute {
+
             restClient
                 .get()
                 .uri(uri, uriVariable)
                 .headers { headers -> applyAuthorization(headers) }
                 .retrieve()
-                .body(JsonNode::class.java)?.let(PaymentResponse::of)
+                .body<JsonNode>()?.let(PaymentResponse::of)
                 ?: PaymentResponse.of(objectMapper.createObjectNode())
         }
     }
@@ -95,49 +105,65 @@ class TossPaymentsClient(
     ): PaymentResponse {
 
         return execute {
+
             restClient
                 .post()
                 .uri(uri)
                 .headers { headers -> applyAuthorization(headers) }
                 .body(body)
                 .retrieve()
-                .body(JsonNode::class.java)?.let(PaymentResponse::of)
+                .body<JsonNode>()?.let(PaymentResponse::of)
                 ?: PaymentResponse.of(objectMapper.createObjectNode())
         }
     }
 
-    private fun applyAuthorization(headers: HttpHeaders) {
+    private fun applyAuthorization(
+        headers: HttpHeaders
+    ) {
 
         val secretKey = tossPaymentsProperties.secretKey
+
         if (secretKey.isBlank()) {
+
             throw ApplicationException(PaymentStatusCode.TOSS_PAYMENTS_SECRET_KEY_MISSING)
         }
 
         headers.setBasicAuth(secretKey, "")
     }
 
-    private fun execute(request: () -> PaymentResponse?): PaymentResponse {
+    private fun execute(
+        request: () -> PaymentResponse?
+    ): PaymentResponse {
 
         try {
+
             return request()
                 ?: PaymentResponse.of(objectMapper.createObjectNode())
         } catch (exception: RestClientResponseException) {
+
             val tossError = parseTossError(exception)
             val message = tossError?.let { "${it.code}: ${it.message}" }
+
                 ?: if (exception.statusCode.is4xxClientError) {
+
                     PaymentStatusCode.TOSS_PAYMENTS_REQUEST_INVALID.message
                 } else {
+
                     PaymentStatusCode.TOSS_PAYMENTS_REQUEST_FAILED.message
                 }
 
             val statusCode = if (exception.statusCode.is4xxClientError) {
+
                 PaymentStatusCode.TOSS_PAYMENTS_REQUEST_INVALID
             } else {
+
                 PaymentStatusCode.TOSS_PAYMENTS_REQUEST_FAILED
             }
 
             throw ApplicationException(statusCode, message)
+
         } catch (exception: RestClientException) {
+
             throw ApplicationException(
                 PaymentStatusCode.TOSS_PAYMENTS_REQUEST_FAILED,
                 exception.message ?: PaymentStatusCode.TOSS_PAYMENTS_REQUEST_FAILED.message
@@ -145,9 +171,12 @@ class TossPaymentsClient(
         }
     }
 
-    private fun parseTossError(exception: RestClientResponseException): TossPaymentsError? {
+    private fun parseTossError(
+        exception: RestClientResponseException
+    ): TossPaymentsError? {
 
         return runCatching {
+
             objectMapper.readValue(
                 exception.responseBodyAsByteArray,
                 TossPaymentsError::class.java
