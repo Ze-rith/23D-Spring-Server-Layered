@@ -25,8 +25,10 @@ class MemberServiceImpl(
     private val passwordEncoder: PasswordEncoder
 ) : MemberService {
 
-    override fun deleteAccount(httpServletRequest: HttpServletRequest,
-                               httpServletResponse: HttpServletResponse): DeleteAccountResponse {
+    override fun deleteAccount(
+        httpServletRequest: HttpServletRequest,
+        httpServletResponse: HttpServletResponse
+    ): DeleteAccountResponse {
 
         val username = tokenService.getCurrentUsername(httpServletRequest)
 
@@ -43,7 +45,9 @@ class MemberServiceImpl(
         return DeleteAccountResponse.of("탈퇴되었습니다.")
     }
 
-    override fun resetPasswordWithoutAuth(passwordResetRequest: PasswordResetRequest): PasswordResetResponse {
+    override fun resetPasswordWithoutAuth(
+        passwordResetRequest: PasswordResetRequest
+    ): PasswordResetResponse {
 
         val member = memberRepository.findByUsername(passwordResetRequest.username)
             ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
@@ -54,9 +58,11 @@ class MemberServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun resetPasswordWithAuth(passwordResetRequest: PasswordResetRequest,
-                                       httpServletRequest: HttpServletRequest,
-                                       httpServletResponse: HttpServletResponse): PasswordResetResponse {
+    override fun resetPasswordWithAuth(
+        passwordResetRequest: PasswordResetRequest,
+        httpServletRequest: HttpServletRequest,
+        httpServletResponse: HttpServletResponse
+    ): PasswordResetResponse {
 
         val accessToken = tokenService.extractTokenFromCookie(
             "accessToken",
@@ -82,7 +88,9 @@ class MemberServiceImpl(
         return PasswordResetResponse.of("비밀번호가 변경되었습니다. 다시 로그인 해주세요.")
     }
 
-    override fun findUsername(findUsernameRequest: FindUsernameRequest): FindUsernameResponse {
+    override fun findUsername(
+        findUsernameRequest: FindUsernameRequest
+    ): FindUsernameResponse {
 
         val username = memberRepository.findUsernameByEmail(findUsernameRequest.email)
             ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
@@ -90,9 +98,11 @@ class MemberServiceImpl(
         return FindUsernameResponse.of(username)
     }
 
-    override fun resetUsernameWithAuth(changeUsernameRequest: ChangeUsernameRequest,
-                                       httpServletRequest: HttpServletRequest,
-                                       httpServletResponse: HttpServletResponse): ChangeUsernameResponse {
+    override fun resetUsernameWithAuth(
+        changeUsernameRequest: ChangeUsernameRequest,
+        httpServletRequest: HttpServletRequest,
+        httpServletResponse: HttpServletResponse
+    ): ChangeUsernameResponse {
 
         val accessToken = tokenService.extractTokenFromCookie(
                 "accessToken",
