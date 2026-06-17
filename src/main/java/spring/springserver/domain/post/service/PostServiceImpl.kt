@@ -29,8 +29,10 @@ class PostServiceImpl (
     private val fileService: FileService
 ): PostService {
 
-    override fun createPost(createPostRequest: CreatePostRequest,
-                            multipartFile: MultipartFile?): PostResponse {
+    override fun createPost(
+        createPostRequest: CreatePostRequest,
+        multipartFile: MultipartFile?
+    ): PostResponse {
 
         val username = SecurityContextHolder.getContext().authentication?.name
             ?: throw ApplicationException(AuthStatusCode.AVAILABLE_ACCESS_TOKEN)
@@ -50,7 +52,9 @@ class PostServiceImpl (
         return PostResponse.of(postRepository.save(post))
     }
 
-    override fun viewPost(id: Long): PostResponse {
+    override fun viewPost(
+        id: Long
+    ): PostResponse {
 
         val post = postRepository.findPostById(id)
             ?: throw ApplicationException(PostStatusCode.INVALID_POST)
@@ -73,8 +77,10 @@ class PostServiceImpl (
         return PostResponse.of(updatedPost)
     }
 
-    override fun updatePost(updatePostRequest: UpdatePostRequest,
-                            multipartFile: MultipartFile?): PostResponse {
+    override fun updatePost(
+        updatePostRequest: UpdatePostRequest,
+        multipartFile: MultipartFile?
+    ): PostResponse {
 
         val post = postRepository.findPostById(updatePostRequest.id)
             ?: throw ApplicationException(PostStatusCode.INVALID_POST)
@@ -102,7 +108,9 @@ class PostServiceImpl (
         return PostResponse.of(post)
     }
 
-    override fun deletePost(id: Long): DeletedPostResponse {
+    override fun deletePost(
+        id: Long
+    ): DeletedPostResponse {
 
         val post = postRepository.findPostById(id)
             ?: throw ApplicationException(PostStatusCode.INVALID_POST)
@@ -120,7 +128,9 @@ class PostServiceImpl (
         return DeletedPostResponse.of("삭제되었습니다")
     }
 
-    private fun validatePostAuthor(post: Post) {
+    private fun validatePostAuthor(
+        post: Post
+    ) {
 
         val principal = SecurityContextHolder.getContext().authentication?.principal
                 as? MemberDetails
@@ -132,7 +142,10 @@ class PostServiceImpl (
         }
     }
 
-    private fun replaceAttachment(post: Post, multipartFile: MultipartFile) {
+    private fun replaceAttachment(
+        post: Post,
+        multipartFile: MultipartFile
+    ) {
 
         val oldFileUrls = post.attachments
             .mapNotNull { attachment -> attachment.fileUrl }
@@ -146,7 +159,9 @@ class PostServiceImpl (
         registerAttachedFileCommitCleanup(oldFileUrls)
     }
 
-    private fun registerUploadedFileRollbackCleanup(fileUrl: String) {
+    private fun registerUploadedFileRollbackCleanup(
+        fileUrl: String
+    ) {
 
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
 
@@ -165,7 +180,9 @@ class PostServiceImpl (
         })
     }
 
-    private fun registerAttachedFileCommitCleanup(fileUrls: List<String>) {
+    private fun registerAttachedFileCommitCleanup(
+        fileUrls: List<String>
+    ) {
 
         if (fileUrls.isEmpty() || !TransactionSynchronizationManager.isSynchronizationActive()) {
 

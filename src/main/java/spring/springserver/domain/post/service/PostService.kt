@@ -8,11 +8,21 @@ import spring.springserver.domain.post.data.response.PostResponse
 
 interface PostService {
 
-    fun createPost(createPostRequest: CreatePostRequest, multipartFile: MultipartFile?): PostResponse
+    fun createPost(
+        createPostRequest: CreatePostRequest,
+        multipartFile: MultipartFile?
+    ): PostResponse
 
-    fun viewPost(id: Long): PostResponse
+    fun viewPost(
+        id: Long
+    ): PostResponse
 
-    fun updatePost(updatePostRequest: UpdatePostRequest, multipartFile: MultipartFile?): PostResponse
+    fun updatePost(
+        updatePostRequest: UpdatePostRequest,
+        multipartFile: MultipartFile?
+    ): PostResponse
 
-    fun deletePost(id: Long): DeletedPostResponse
+    fun deletePost(
+        id: Long
+    ): DeletedPostResponse
 }

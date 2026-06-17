@@ -25,27 +25,35 @@ class PostController(
 ) {
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun createPost(@Valid @RequestPart("request") createPostRequest: CreatePostRequest,
-                   @RequestPart("multipartFile", required = false) multipartFile: MultipartFile?): BaseResponse<PostResponse> {
+    fun createPost(
+        @Valid @RequestPart("request") createPostRequest: CreatePostRequest,
+        @RequestPart("multipartFile", required = false) multipartFile: MultipartFile?)
+    : BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.createPost(createPostRequest, multipartFile))
     }
 
     @GetMapping
-    fun viewPost(@RequestParam postId: Long): BaseResponse<PostResponse> {
+    fun viewPost(
+        @RequestParam postId: Long
+    ): BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.viewPost(postId))
     }
 
     @PatchMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun updatePost(@Valid @RequestPart("request") updatePostRequest: UpdatePostRequest,
-                   @RequestPart("multipartFile", required = false) multipartFile: MultipartFile?): BaseResponse<PostResponse> {
+    fun updatePost(
+        @Valid @RequestPart("request") updatePostRequest: UpdatePostRequest,
+        @RequestPart("multipartFile", required = false) multipartFile: MultipartFile?
+    ): BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.updatePost(updatePostRequest, multipartFile))
     }
 
     @DeleteMapping
-    fun deletePost(@RequestParam postId: Long): BaseResponse<DeletedPostResponse> {
+    fun deletePost(
+        @RequestParam postId: Long
+    ): BaseResponse<DeletedPostResponse> {
 
         return BaseResponse.ok(postService.deletePost(postId))
     }
