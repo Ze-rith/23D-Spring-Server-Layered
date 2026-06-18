@@ -6,7 +6,9 @@ data class DeletedPostResponse(
 
     companion object {
 
-        fun of(message: String): DeletedPostResponse {
+        fun of(
+            message: String
+        ): DeletedPostResponse {
 
             return DeletedPostResponse(message)
         }

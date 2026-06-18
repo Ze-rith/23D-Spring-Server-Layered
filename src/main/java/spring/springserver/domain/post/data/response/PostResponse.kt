@@ -19,7 +19,9 @@ data class PostResponse(
 
     companion object {
 
-        fun of(post: Post): PostResponse {
+        fun of(
+            post: Post
+        ): PostResponse {
 
             return PostResponse(
                 post.getId(),

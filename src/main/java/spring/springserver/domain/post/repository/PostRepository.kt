@@ -11,11 +11,15 @@ import java.time.LocalDateTime
 @Repository
 interface PostRepository: JpaRepository<Post, Long> {
 
-    fun findPostById(id: Long): Post?
+    fun findPostById(
+        id: Long
+    ): Post?
 
     fun findAllByIsDeletedFalseOrderByUpdatedAtDesc(): List<Post>
 
-    fun findAllByIsDeletedTrueAndDeletedAtBefore(deletedAt: LocalDateTime): List<Post>
+    fun findAllByIsDeletedTrueAndDeletedAtBefore(
+        deletedAt: LocalDateTime
+    ): List<Post>
 
     @Query(
         """
@@ -32,8 +36,14 @@ interface PostRepository: JpaRepository<Post, Long> {
     fun searchPostsByTitle(@Param("title") title: String): List<Post>
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("update Post p " +
-            "set p.viewCount = p.viewCount + 1 " +
-            "where p.id = :id and p.isDeleted = false")
-    fun incrementViewCount(@Param("id") id: Long): Int
+    @Query(
+        """
+update Post p
+set p.viewCount = p.viewCount + 1
+where p.id = :id and p.isDeleted = false
+"""
+    )
+    fun incrementViewCount(
+        @Param("id") id: Long
+    ): Int
 }

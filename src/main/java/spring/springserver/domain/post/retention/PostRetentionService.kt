@@ -8,12 +8,14 @@ import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import spring.springserver.domain.file.service.FileService
 import spring.springserver.domain.post.entity.Post
+import spring.springserver.domain.post.favorite.repository.PostFavoriteRepository
 import spring.springserver.domain.post.repository.PostRepository
 import java.time.LocalDateTime
 
 @Component
 class PostRetentionService(
     private val postRepository: PostRepository,
+    private val postFavoriteRepository: PostFavoriteRepository,
     private val fileService: FileService,
 ) {
 
@@ -34,11 +36,14 @@ class PostRetentionService(
         if (expiredPosts.isNotEmpty()) {
 
             registerAttachedFileCommitCleanup(expiredPosts)
+            postFavoriteRepository.deleteAllByPostIn(expiredPosts)
             postRepository.deleteAll(expiredPosts)
         }
     }
 
-    private fun registerAttachedFileCommitCleanup(posts: List<Post>) {
+    private fun registerAttachedFileCommitCleanup(
+        posts: List<Post>
+    ) {
 
         val fileUrls = posts.flatMap { post -> post.attachments }
             .mapNotNull { attachment -> attachment.fileUrl }

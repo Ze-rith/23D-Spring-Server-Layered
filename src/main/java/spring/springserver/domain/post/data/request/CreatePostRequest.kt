@@ -19,7 +19,9 @@ data class CreatePostRequest(
 
 ) {
 
-    fun toEntity(member: Member): Post {
+    fun toEntity(
+        member: Member
+    ): Post {
 
         return Post(
             title = title,

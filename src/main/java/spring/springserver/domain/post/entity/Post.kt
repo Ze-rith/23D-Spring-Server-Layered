@@ -51,7 +51,9 @@ class Post (
         this.updatedAt = LocalDateTime.now()
     }
 
-    fun addAttachment(fileUrl: String) {
+    fun addAttachment(
+        fileUrl: String
+    ) {
 
         attachments.add(PostAttach(fileUrl = fileUrl, post = this))
     }
