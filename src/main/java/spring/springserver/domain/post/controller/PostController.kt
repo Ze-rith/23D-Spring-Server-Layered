@@ -1,7 +1,6 @@
 package spring.springserver.domain.post.controller
 
 import jakarta.validation.Valid
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -9,9 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
 import spring.springserver.domain.post.data.request.CreatePostRequest
 import spring.springserver.domain.post.data.request.UpdatePostRequest
 import spring.springserver.domain.post.data.response.DeletedPostResponse
@@ -25,13 +22,12 @@ class PostController(
     private val postService: PostService
 ) {
 
-    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping
     fun createPost(
-        @Valid @RequestBody createPostRequest: CreatePostRequest,
-        @RequestPart("multipartFile", required = false) multipartFile: MultipartFile?
+        @Valid @RequestBody createPostRequest: CreatePostRequest
     ): BaseResponse<PostResponse> {
 
-        return BaseResponse.ok(postService.createPost(createPostRequest, multipartFile))
+        return BaseResponse.ok(postService.createPost(createPostRequest))
     }
 
     @GetMapping
@@ -42,13 +38,12 @@ class PostController(
         return BaseResponse.ok(postService.viewPost(postId))
     }
 
-    @PatchMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PatchMapping
     fun updatePost(
-        @Valid @RequestBody updatePostRequest: UpdatePostRequest,
-        @RequestPart("multipartFile", required = false) multipartFile: MultipartFile?
+        @Valid @RequestBody updatePostRequest: UpdatePostRequest
     ): BaseResponse<PostResponse> {
 
-        return BaseResponse.ok(postService.updatePost(updatePostRequest, multipartFile))
+        return BaseResponse.ok(postService.updatePost(updatePostRequest))
     }
 
     @DeleteMapping

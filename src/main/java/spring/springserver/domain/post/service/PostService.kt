@@ -1,6 +1,5 @@
 package spring.springserver.domain.post.service
 
-import org.springframework.web.multipart.MultipartFile
 import spring.springserver.domain.post.data.request.CreatePostRequest
 import spring.springserver.domain.post.data.request.UpdatePostRequest
 import spring.springserver.domain.post.data.response.DeletedPostResponse
@@ -9,8 +8,7 @@ import spring.springserver.domain.post.data.response.PostResponse
 interface PostService {
 
     fun createPost(
-        createPostRequest: CreatePostRequest,
-        multipartFile: MultipartFile?
+        createPostRequest: CreatePostRequest
     ): PostResponse
 
     fun viewPost(
@@ -18,8 +16,7 @@ interface PostService {
     ): PostResponse
 
     fun updatePost(
-        updatePostRequest: UpdatePostRequest,
-        multipartFile: MultipartFile?
+        updatePostRequest: UpdatePostRequest
     ): PostResponse
 
     fun deletePost(

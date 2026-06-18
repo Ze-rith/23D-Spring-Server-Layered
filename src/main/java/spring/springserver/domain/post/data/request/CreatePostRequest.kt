@@ -15,6 +15,8 @@ data class CreatePostRequest(
     @field:Size(max = 2000, message = "내용은 2000자 이하여야 합니다.")
     val content: String,
 
+    val fileUrl: String?,
+
 ) {
 
     fun toEntity(member: Member): Post {

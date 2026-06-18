@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationManager
-import org.springframework.web.multipart.MultipartFile
 import spring.springserver.domain.auth.exception.AuthStatusCode
-import spring.springserver.domain.file.data.request.FileUploadRequest
 import spring.springserver.domain.file.service.FileService
 import spring.springserver.domain.member.repository.MemberRepository
 import spring.springserver.domain.post.data.request.CreatePostRequest
@@ -18,7 +16,6 @@ import spring.springserver.domain.post.entity.Post
 import spring.springserver.domain.post.exception.PostStatusCode
 import spring.springserver.domain.post.repository.PostRepository
 import spring.springserver.global.exception.exception.ApplicationException
-import spring.springserver.global.jwt.MemberDetails
 import java.time.LocalDateTime
 
 @Service
@@ -30,24 +27,16 @@ class PostServiceImpl (
 ): PostService {
 
     override fun createPost(
-        createPostRequest: CreatePostRequest,
-        multipartFile: MultipartFile?
+        createPostRequest: CreatePostRequest
     ): PostResponse {
 
-        val username = SecurityContextHolder.getContext().authentication?.name
-            ?: throw ApplicationException(AuthStatusCode.AVAILABLE_ACCESS_TOKEN)
-
-        val member = memberRepository.findByUsername(username)
-            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
-
+        val member = getCurrentMember()
         val post = createPostRequest.toEntity(member)
 
-        if (multipartFile != null && !multipartFile.isEmpty) {
-
-            val uploadResponse = fileService.uploadFile(FileUploadRequest(multipartFile))
-            registerUploadedFileRollbackCleanup(uploadResponse.fileUrl())
-            post.addAttachment(uploadResponse.fileUrl())
-        }
+        createPostRequest.fileUrl
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
+            ?.let { fileUrl -> post.addAttachment(fileUrl) }
 
         return PostResponse.of(postRepository.save(post))
     }
@@ -78,8 +67,7 @@ class PostServiceImpl (
     }
 
     override fun updatePost(
-        updatePostRequest: UpdatePostRequest,
-        multipartFile: MultipartFile?
+        updatePostRequest: UpdatePostRequest
     ): PostResponse {
 
         val post = postRepository.findPostById(updatePostRequest.id)
@@ -96,10 +84,10 @@ class PostServiceImpl (
 
         post.content = updatePostRequest.content
 
-        if (multipartFile != null && !multipartFile.isEmpty) {
-
-            replaceAttachment(post, multipartFile)
-        }
+        updatePostRequest.fileUrl
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
+            ?.let { fileUrl -> replaceAttachment(post, fileUrl) }
 
         post.preUpdate()
 
@@ -132,52 +120,37 @@ class PostServiceImpl (
         post: Post
     ) {
 
-        val principal = SecurityContextHolder.getContext().authentication?.principal
-                as? MemberDetails
-            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
+        val member = getCurrentMember()
 
-        if (post.member.getId() != principal.getId()) {
+        if (post.member.getId() != member.getId()) {
 
             throw ApplicationException(PostStatusCode.FORBIDDEN_POST_ACCESS)
         }
     }
 
+    private fun getCurrentMember() =
+        SecurityContextHolder.getContext().authentication?.name
+            ?.takeIf { username -> username.isNotBlank() && username != "anonymousUser" }
+            ?.let { username -> memberRepository.findByUsername(username) }
+            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
+
     private fun replaceAttachment(
         post: Post,
-        multipartFile: MultipartFile
+        fileUrl: String
     ) {
 
         val oldFileUrls = post.attachments
             .mapNotNull { attachment -> attachment.fileUrl }
 
-        val uploadResponse = fileService.uploadFile(FileUploadRequest(multipartFile))
-        registerUploadedFileRollbackCleanup(uploadResponse.fileUrl())
-
-        post.attachments.clear()
-        post.addAttachment(uploadResponse.fileUrl())
-
-        registerAttachedFileCommitCleanup(oldFileUrls)
-    }
-
-    private fun registerUploadedFileRollbackCleanup(
-        fileUrl: String
-    ) {
-
-        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+        if (oldFileUrls.size == 1 && oldFileUrls.first() == fileUrl) {
 
             return
         }
 
-        TransactionSynchronizationManager.registerSynchronization(object: TransactionSynchronization {
+        post.attachments.clear()
+        post.addAttachment(fileUrl)
 
-            override fun afterCompletion(status: Int) {
-
-                if (status == TransactionSynchronization.STATUS_ROLLED_BACK) {
-
-                    fileService.deleteFile(fileUrl)
-                }
-            }
-        })
+        registerAttachedFileCommitCleanup(oldFileUrls)
     }
 
     private fun registerAttachedFileCommitCleanup(
