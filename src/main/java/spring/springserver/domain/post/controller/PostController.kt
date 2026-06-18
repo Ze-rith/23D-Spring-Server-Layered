@@ -1,9 +1,12 @@
 package spring.springserver.domain.post.controller
 
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -30,26 +33,29 @@ class PostController(
         return BaseResponse.ok(postService.createPost(createPostRequest))
     }
 
-    @GetMapping
+    @GetMapping ("/{postId}")
     fun viewPost(
-        @RequestParam postId: Long
+        @PathVariable postId: Long
     ): BaseResponse<PostResponse> {
 
         return BaseResponse.ok(postService.viewPost(postId))
     }
 
-    @GetMapping("/all")
-    fun viewAllPosts(): BaseResponse<List<PostResponse>> {
+    @GetMapping
+    fun viewAllPosts(
+        pageable: Pageable
+    ): BaseResponse<Page<PostResponse>> {
 
-        return BaseResponse.ok(postService.viewAllPosts())
+        return BaseResponse.ok(postService.viewAllPosts(pageable))
     }
 
     @GetMapping("/search")
     fun searchPostsByTitle(
-        @RequestParam title: String
-    ): BaseResponse<List<PostResponse>> {
+        @RequestParam title: String,
+        pageable: Pageable
+    ): BaseResponse<Page<PostResponse>> {
 
-        return BaseResponse.ok(postService.searchPostsByTitle(title))
+        return BaseResponse.ok(postService.searchPostsByTitle(title, pageable))
     }
 
     @PatchMapping

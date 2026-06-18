@@ -45,8 +45,14 @@ class PostRetentionService(
         posts: List<Post>
     ) {
 
-        val fileUrls = posts.flatMap { post -> post.attachments }
-            .mapNotNull { attachment -> attachment.fileUrl }
+        val fileUrls = posts.flatMap {
+
+            post -> post.attachments
+        }
+            .mapNotNull {
+
+                attachment -> attachment.fileUrl
+            }
 
         if (fileUrls.isEmpty() || !TransactionSynchronizationManager.isSynchronizationActive()) {
 
@@ -61,14 +67,13 @@ class PostRetentionService(
 
                     fileUrl ->
 
-                    runCatching {
+                    try {
 
                         fileService.deleteFile(fileUrl)
+                    } catch (exception: Exception) {
+
+                        log.warn("Failed to delete retained post attachment file. fileUrl={}", fileUrl, exception)
                     }
-                        .onFailure {
-                            exception ->
-                            log.warn("Failed to delete retained post attachment file. fileUrl={}", fileUrl, exception)
-                        }
                 }
             }
         })

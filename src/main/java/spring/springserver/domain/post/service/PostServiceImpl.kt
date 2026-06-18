@@ -1,5 +1,7 @@
 package spring.springserver.domain.post.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,8 +37,12 @@ class PostServiceImpl (
 
         createPostRequest.fileUrl
             ?.trim()
-            ?.takeIf { it.isNotBlank() }
-            ?.let { fileUrl -> post.addAttachment(fileUrl) }
+            ?.takeIf {
+                it.isNotBlank()
+            }
+            ?.let {
+                fileUrl -> post.addAttachment(fileUrl)
+            }
 
         return PostResponse.of(postRepository.save(post))
     }
@@ -67,20 +73,24 @@ class PostServiceImpl (
     }
 
     override fun viewAllPosts(
-    ): List<PostResponse> {
+        pageable: Pageable
+    ): Page<PostResponse> {
 
-        return postRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc()
+        return postRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc(pageable)
             .map { post -> PostResponse.of(post) }
     }
 
     override fun searchPostsByTitle(
-        title: String
-    ): List<PostResponse> {
+        title: String,
+        pageable: Pageable
+    ): Page<PostResponse> {
 
         val normalizedTitle = title.trim()
 
-        return postRepository.searchPostsByTitle(normalizedTitle)
-            .map { post -> PostResponse.of(post) }
+        return postRepository.searchPostsByTitle(normalizedTitle, pageable)
+            .map {
+                post -> PostResponse.of(post)
+            }
     }
 
     override fun updatePost(
@@ -183,7 +193,10 @@ class PostServiceImpl (
 
             override fun afterCommit() {
 
-                fileUrls.forEach { fileUrl -> fileService.deleteFile(fileUrl) }
+                fileUrls.forEach {
+
+                    fileUrl -> fileService.deleteFile(fileUrl)
+                }
             }
         })
     }

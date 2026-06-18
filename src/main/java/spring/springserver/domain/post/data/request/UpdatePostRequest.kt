@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
 
 data class UpdatePostRequest(
-    @field:Positive
+    @field:NotBlank
     val id: Long,
 
     @field:NotBlank

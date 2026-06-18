@@ -1,5 +1,8 @@
 package spring.springserver.domain.post.favorite.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,22 +32,25 @@ class PostFavoriteServiceImpl(
     ): PostFavoriteResponse {
 
         val member = getCurrentMember()
+
         val post = getActivePost(postId)
 
         if (postFavoriteRepository.existsByMemberAndPost(member, post)) {
 
-            throw ApplicationException.of(
-                CommonStatusCode.INVALID_ARGUMENT,
-                "이미 찜한 게시글입니다."
-            )
+            throw alreadyFavoritePostException()
         }
 
-        postFavoriteRepository.save(
-            PostFavorite(
-                member = member,
-                post = post,
+        try {
+            postFavoriteRepository.saveAndFlush(
+                PostFavorite(
+                    member = member,
+                    post = post,
+                )
             )
-        )
+        } catch (exception: DataIntegrityViolationException) {
+
+            throw alreadyFavoritePostException()
+        }
 
         return PostFavoriteResponse.of(
             postId,
@@ -58,6 +64,7 @@ class PostFavoriteServiceImpl(
     ): PostFavoriteResponse {
 
         val member = getCurrentMember()
+
         val post = getActivePost(postId)
 
         val deletedCount = postFavoriteRepository.deleteByMemberAndPost(member, post)
@@ -78,14 +85,16 @@ class PostFavoriteServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun viewFavoritePosts(): List<PostResponse> {
+    override fun viewFavoritePosts(
+        pageable: Pageable
+    ): Page<PostResponse> {
 
         val member = getCurrentMember()
 
-        return postFavoriteRepository.findAllByMemberOrderByPostUpdatedAtDesc(member)
-            .map { postFavorite -> postFavorite.post }
-            .filter { post -> !post.isDeleted }
-            .map { post -> PostResponse.of(post) }
+        return postFavoriteRepository.findFavoritePostsByMember(member, pageable)
+            .map {
+                post -> PostResponse.of(post)
+            }
     }
 
     private fun getCurrentMember(): Member =
@@ -106,4 +115,10 @@ class PostFavoriteServiceImpl(
 
         return post
     }
+
+    private fun alreadyFavoritePostException(): ApplicationException =
+        ApplicationException.of(
+            CommonStatusCode.INVALID_ARGUMENT,
+            "이미 찜한 게시글입니다."
+        )
 }

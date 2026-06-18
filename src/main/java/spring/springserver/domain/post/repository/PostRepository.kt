@@ -3,6 +3,8 @@ package spring.springserver.domain.post.repository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import spring.springserver.domain.post.entity.Post
@@ -15,7 +17,9 @@ interface PostRepository: JpaRepository<Post, Long> {
         id: Long
     ): Post?
 
-    fun findAllByIsDeletedFalseOrderByUpdatedAtDesc(): List<Post>
+    fun findAllByIsDeletedFalseOrderByUpdatedAtDesc(
+        pageable: Pageable
+    ): Page<Post>
 
     fun findAllByIsDeletedTrueAndDeletedAtBefore(
         deletedAt: LocalDateTime
@@ -33,7 +37,10 @@ interface PostRepository: JpaRepository<Post, Long> {
         order by p.updatedAt desc
         """
     )
-    fun searchPostsByTitle(@Param("title") title: String): List<Post>
+    fun searchPostsByTitle(
+        @Param("title") title: String,
+        pageable: Pageable
+    ): Page<Post>
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(
