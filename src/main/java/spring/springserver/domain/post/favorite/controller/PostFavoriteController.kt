@@ -13,7 +13,6 @@ import spring.springserver.global.data.BaseResponse
 
 @RestController
 @RequestMapping("/api/post/favorite")
-
 class PostFavoriteController(
     private val postFavoriteService: PostFavoriteService
 ) {
