@@ -10,7 +10,11 @@ data class PostFavoriteResponse(
 
     companion object {
 
-        fun of(postId: Long, favoriteCount: Long, message: String): PostFavoriteResponse {
+        fun of(
+            postId: Long,
+            favoriteCount: Long,
+            message: String
+        ): PostFavoriteResponse {
 
             return PostFavoriteResponse(
                 postId,

@@ -24,7 +24,9 @@ class PostFavoriteServiceImpl(
     private val memberRepository: MemberRepository
 ): PostFavoriteService {
 
-    override fun favoritePost(postId: Long): PostFavoriteResponse {
+    override fun favoritePost(
+        postId: Long
+    ): PostFavoriteResponse {
 
         val member = getCurrentMember()
         val post = getActivePost(postId)
@@ -51,7 +53,9 @@ class PostFavoriteServiceImpl(
         )
     }
 
-    override fun unfavoritePost(postId: Long): PostFavoriteResponse {
+    override fun unfavoritePost(
+        postId: Long
+    ): PostFavoriteResponse {
 
         val member = getCurrentMember()
         val post = getActivePost(postId)

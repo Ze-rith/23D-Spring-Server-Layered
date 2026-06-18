@@ -7,13 +7,25 @@ import spring.springserver.domain.post.favorite.entity.PostFavorite
 
 interface PostFavoriteRepository: JpaRepository<PostFavorite, Long> {
 
-    fun existsByMemberAndPost(member: Member, post: Post): Boolean
+    fun existsByMemberAndPost(
+        member: Member,
+        post: Post
+    ): Boolean
 
-    fun countByPostId(postId: Long): Long
+    fun countByPostId(
+        postId: Long
+    ): Long
 
-    fun deleteByMemberAndPost(member: Member, post: Post): Long
+    fun deleteByMemberAndPost(
+        member: Member,
+        post: Post
+    ): Long
 
-    fun deleteAllByPostIn(posts: Collection<Post>)
+    fun deleteAllByPostIn(
+        posts: Collection<Post>
+    )
 
-    fun findAllByMemberOrderByPostUpdatedAtDesc(member: Member): List<PostFavorite>
+    fun findAllByMemberOrderByPostUpdatedAtDesc(
+        member: Member
+    ): List<PostFavorite>
 }

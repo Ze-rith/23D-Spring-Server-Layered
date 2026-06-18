@@ -5,9 +5,13 @@ import spring.springserver.domain.post.favorite.data.response.PostFavoriteRespon
 
 interface PostFavoriteService {
 
-    fun favoritePost(postId: Long): PostFavoriteResponse
+    fun favoritePost(
+        postId: Long
+    ): PostFavoriteResponse
 
-    fun unfavoritePost(postId: Long): PostFavoriteResponse
+    fun unfavoritePost(
+        postId: Long
+    ): PostFavoriteResponse
 
     fun viewFavoritePosts(): List<PostResponse>
 }

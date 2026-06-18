@@ -19,6 +19,7 @@ import spring.springserver.domain.post.entity.Post
         UniqueConstraint(name = "uk_post_favorite_member_post", columnNames = ["member_id", "post_id"])
     ]
 )
+
 class PostFavorite(
 
     @JoinColumn(name = "member_id", nullable = false)
