@@ -72,7 +72,7 @@ jobs:
           script: |
             set -e
 
-            APP_DIR="/home/${{ secrets.EC2_USER }}/app"
+            APP_DIR="/opt/spring-server"
             NETWORK_NAME="spring-server-network"
             PROXY_NAME="spring-server-proxy"
             OWNER="${{ github.repository_owner }}"
