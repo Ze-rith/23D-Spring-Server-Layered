@@ -2,13 +2,12 @@ package spring.springserver.domain.member.service
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import spring.springserver.domain.member.data.request.ChangeUsernameRequest
 import spring.springserver.domain.member.data.request.FindUsernameRequest
 import spring.springserver.domain.member.data.request.PasswordResetRequest
-import spring.springserver.domain.member.data.response.ChangeUsernameResponse
 import spring.springserver.domain.member.data.response.DeleteAccountResponse
 import spring.springserver.domain.member.data.response.FindUsernameResponse
 import spring.springserver.domain.member.data.response.PasswordResetResponse
+import spring.springserver.domain.member.data.response.UsernameCheckResponse
 
 interface MemberService {
 
@@ -31,9 +30,7 @@ interface MemberService {
         findUsernameRequest: FindUsernameRequest
     ): FindUsernameResponse
 
-    fun resetUsernameWithAuth(
-        changeUsernameRequest: ChangeUsernameRequest,
-        httpServletRequest: HttpServletRequest,
-        httpServletResponse: HttpServletResponse
-    ): ChangeUsernameResponse
+    fun checkUsername(
+        username: String
+    ): UsernameCheckResponse
 }
