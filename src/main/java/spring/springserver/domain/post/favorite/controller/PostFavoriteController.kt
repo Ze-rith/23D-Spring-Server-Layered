@@ -1,5 +1,6 @@
 package spring.springserver.domain.post.favorite.controller
 
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -37,7 +38,7 @@ class PostFavoriteController(
 
     @GetMapping
     fun viewFavoritePosts(
-        pageable: Pageable
+        @ParameterObject pageable: Pageable
     ): BaseResponse<Page<PostResponse>> {
 
         return BaseResponse.ok(postFavoriteService.viewFavoritePosts(pageable))

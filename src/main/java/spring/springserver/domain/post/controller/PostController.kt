@@ -1,6 +1,7 @@
 package spring.springserver.domain.post.controller
 
 import jakarta.validation.Valid
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -43,7 +44,7 @@ class PostController(
 
     @GetMapping
     fun viewAllPosts(
-        pageable: Pageable
+        @ParameterObject pageable: Pageable
     ): BaseResponse<Page<PostResponse>> {
 
         return BaseResponse.ok(postService.viewAllPosts(pageable))
@@ -52,7 +53,7 @@ class PostController(
     @GetMapping("/search")
     fun searchPostsByTitle(
         @RequestParam title: String,
-        pageable: Pageable
+        @ParameterObject pageable: Pageable
     ): BaseResponse<Page<PostResponse>> {
 
         return BaseResponse.ok(postService.searchPostsByTitle(title, pageable))

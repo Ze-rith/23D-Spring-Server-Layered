@@ -1,6 +1,7 @@
 package spring.springserver.domain.post.service
 
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
@@ -76,7 +77,7 @@ class PostServiceImpl (
         pageable: Pageable
     ): Page<PostResponse> {
 
-        return postRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc(pageable)
+        return postRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc(pageable.withoutSort())
             .map { post -> PostResponse.of(post) }
     }
 
@@ -87,7 +88,7 @@ class PostServiceImpl (
 
         val normalizedTitle = title.trim()
 
-        return postRepository.searchPostsByTitle(normalizedTitle, pageable)
+        return postRepository.searchPostsByTitle(normalizedTitle, pageable.withoutSort())
             .map {
                 post -> PostResponse.of(post)
             }
@@ -200,4 +201,7 @@ class PostServiceImpl (
             }
         })
     }
+
+    private fun Pageable.withoutSort(): Pageable =
+        PageRequest.of(pageNumber, pageSize)
 }

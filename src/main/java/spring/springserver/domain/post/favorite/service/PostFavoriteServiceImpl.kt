@@ -1,6 +1,7 @@
 package spring.springserver.domain.post.favorite.service
 
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.core.context.SecurityContextHolder
@@ -91,7 +92,7 @@ class PostFavoriteServiceImpl(
 
         val member = getCurrentMember()
 
-        return postFavoriteRepository.findFavoritePostsByMember(member, pageable)
+        return postFavoriteRepository.findFavoritePostsByMember(member, pageable.withoutSort())
             .map {
                 post -> PostResponse.of(post)
             }
@@ -121,4 +122,7 @@ class PostFavoriteServiceImpl(
             CommonStatusCode.INVALID_ARGUMENT,
             "이미 찜한 게시글입니다."
         )
+
+    private fun Pageable.withoutSort(): Pageable =
+        PageRequest.of(pageNumber, pageSize)
 }
