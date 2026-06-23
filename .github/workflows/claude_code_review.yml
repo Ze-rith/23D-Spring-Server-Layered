@@ -22,6 +22,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
           prompt: |
             Please review the changes (diff) in this PR according to our team's coding conventions.
             Write the review in English, and post it as a comment on the PR.
