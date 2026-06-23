@@ -14,7 +14,7 @@ import spring.springserver.domain.member.entity.Member
 import java.time.LocalDateTime
 
 @Entity
-class Post (
+class Post(
     @Column(nullable = false, length = 255)
     var title: String,
 
@@ -44,7 +44,7 @@ class Post (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private var id: Long? = null
 
-    fun getId(): Long? = id
+    fun getId() = id
 
     fun preUpdate() {
 
@@ -55,6 +55,11 @@ class Post (
         fileUrl: String
     ) {
 
-        attachments.add(PostAttach(fileUrl = fileUrl, post = this))
+        attachments.add(
+            PostAttach(
+                fileUrl = fileUrl,
+                post = this
+            )
+        )
     }
 }

@@ -13,7 +13,7 @@ import jakarta.persistence.PrePersist
 import java.time.LocalDateTime
 
 @Entity
-class Member (
+class Member(
     @Column(unique = true)
     var username: String,
 

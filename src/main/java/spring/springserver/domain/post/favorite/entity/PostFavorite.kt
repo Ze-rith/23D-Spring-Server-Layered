@@ -16,11 +16,13 @@ import spring.springserver.domain.post.entity.Post
 @Table(
     name = "post_favorite",
     uniqueConstraints = [
-        UniqueConstraint(name = "uk_post_favorite_member_post", columnNames = ["member_id", "post_id"])
+        UniqueConstraint(
+            name = "uk_post_favorite_member_post",
+            columnNames = ["member_id", "post_id"]
+        )
     ]
 )
 class PostFavorite(
-
     @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     val member: Member,

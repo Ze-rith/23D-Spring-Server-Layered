@@ -21,5 +21,5 @@ class PostAttach(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private var id: Long? = null
 
-    fun getId(): Long? = id
+    fun getId() = id
 }

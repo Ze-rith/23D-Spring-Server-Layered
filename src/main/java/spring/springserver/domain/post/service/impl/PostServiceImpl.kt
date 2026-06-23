@@ -1,4 +1,4 @@
-package spring.springserver.domain.post.service
+package spring.springserver.domain.post.service.impl
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -18,12 +18,13 @@ import spring.springserver.domain.post.data.response.PostResponse
 import spring.springserver.domain.post.entity.Post
 import spring.springserver.domain.post.exception.PostStatusCode
 import spring.springserver.domain.post.repository.PostRepository
+import spring.springserver.domain.post.service.PostService
 import spring.springserver.global.exception.exception.ApplicationException
 import java.time.LocalDateTime
 
 @Service
 @Transactional(rollbackFor = [Exception::class])
-class PostServiceImpl (
+class PostServiceImpl(
     private val postRepository: PostRepository,
     private val memberRepository: MemberRepository,
     private val fileService: FileService
@@ -38,12 +39,8 @@ class PostServiceImpl (
 
         createPostRequest.fileUrl
             ?.trim()
-            ?.takeIf {
-                it.isNotBlank()
-            }
-            ?.let {
-                fileUrl -> post.addAttachment(fileUrl)
-            }
+            ?.takeIf { it.isNotBlank() }
+            ?.let { fileUrl -> post.addAttachment(fileUrl) }
 
         return PostResponse.of(postRepository.save(post))
     }
@@ -88,10 +85,10 @@ class PostServiceImpl (
 
         val normalizedTitle = title.trim()
 
-        return postRepository.searchPostsByTitle(normalizedTitle, pageable.withoutSort())
-            .map {
-                post -> PostResponse.of(post)
-            }
+        return postRepository.searchPostsByTitle(
+            normalizedTitle,
+            pageable.withoutSort()
+        ).map { post -> PostResponse.of(post) }
     }
 
     override fun updatePost(

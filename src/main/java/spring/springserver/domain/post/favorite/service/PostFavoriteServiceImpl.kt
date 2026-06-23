@@ -92,17 +92,16 @@ class PostFavoriteServiceImpl(
 
         val member = getCurrentMember()
 
-        return postFavoriteRepository.findFavoritePostsByMember(member, pageable.withoutSort())
-            .map {
-                post -> PostResponse.of(post)
-            }
+        return postFavoriteRepository.findFavoritePostsByMember(
+            member,
+            pageable.withoutSort()
+        ).map { post -> PostResponse.of(post) }
     }
 
-    private fun getCurrentMember(): Member =
-        SecurityContextHolder.getContext().authentication?.name
-            ?.takeIf { username -> username.isNotBlank() && username != "anonymousUser" }
-            ?.let { username -> memberRepository.findByUsername(username) }
-            ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
+    private fun getCurrentMember() = SecurityContextHolder.getContext().authentication?.name
+        ?.takeIf { username -> username.isNotBlank() && username != "anonymousUser" }
+        ?.let { username -> memberRepository.findByUsername(username) }
+        ?: throw ApplicationException(AuthStatusCode.USERNAME_NOT_FOUND)
 
     private fun getActivePost(postId: Long): Post {
 
@@ -117,11 +116,10 @@ class PostFavoriteServiceImpl(
         return post
     }
 
-    private fun alreadyFavoritePostException(): ApplicationException =
-        ApplicationException.of(
-            CommonStatusCode.INVALID_ARGUMENT,
-            "이미 찜한 게시글입니다."
-        )
+    private fun alreadyFavoritePostException() = ApplicationException.of(
+        CommonStatusCode.INVALID_ARGUMENT,
+        "이미 찜한 게시글입니다."
+    )
 
     private fun Pageable.withoutSort(): Pageable =
         PageRequest.of(pageNumber, pageSize)
