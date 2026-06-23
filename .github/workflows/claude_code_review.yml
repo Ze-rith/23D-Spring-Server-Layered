@@ -205,4 +205,4 @@ jobs:
             - For each point raised, indicate the file name and, where possible, the line number, and briefly specify which convention rule was violated.
             - If there are no major issues overall, state that clearly.
           claude_args: |
-            --allowedTools "Write(/home/runner/work/**),Bash(gh pr diff:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr comment:*)"
+            --allowedTools "Write,Bash(gh pr diff:*),Bash(gh pr list:*),Bash(gh pr view:*),Bash(gh pr comment:*)" --max-turns 15
