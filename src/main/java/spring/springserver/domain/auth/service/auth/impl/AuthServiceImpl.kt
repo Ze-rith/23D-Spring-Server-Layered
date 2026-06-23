@@ -16,6 +16,7 @@ import spring.springserver.domain.auth.service.auth.AuthService
 import spring.springserver.domain.auth.service.token.TokenService
 import spring.springserver.domain.key.service.KeyService
 import spring.springserver.domain.member.repository.MemberRepository
+import spring.springserver.domain.profile.service.ProfileService
 import spring.springserver.global.exception.exception.ApplicationException
 
 @Service
@@ -24,7 +25,8 @@ class AuthServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val memberRepository: MemberRepository,
     private val tokenService: TokenService,
-    private val keyService: KeyService
+    private val keyService: KeyService,
+    private val profileService: ProfileService
 ): AuthService {
 
     override fun signUp(
@@ -52,6 +54,8 @@ class AuthServiceImpl(
             memberId = member.getId()!!
         )
 
+        profileService.createDefaultProfile(member)
+
         return SignUpResponse.of("회원가입이 완료 되었습니다.")
     }
 
@@ -60,7 +64,7 @@ class AuthServiceImpl(
         httpServletResponse: HttpServletResponse
     ): SignInResponse {
 
-        val member = memberRepository.findByUsername(signInRequest.username)
+        val member = memberRepository.findByEmail(signInRequest.email)
             ?: throw ApplicationException(AuthStatusCode.INVALID_CREDENTIALS)
 
         if(!passwordEncoder.matches(signInRequest.password, member.password)){
